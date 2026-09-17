@@ -3,18 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Urartuhi | Art Gallery</title>
-  <meta name="description" content="Urartuhi -- a curated art gallery and slideshow." />
+  <title>An Instant In Eternity | Urartuhi</title>
+  <meta name="description" content="An Instant In Eternity -- Urartuhi art gallery, featuring The Well Of Pure Source, Axpure." />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header class="site-header">
-    <h1 class="wordmark">URARTUHI</h1>
-    <p class="tagline">A curated gallery of works</p>
+    <h1 class="wordmark">An Instant In Eternity</h1>
+    <p class="tagline">Urartuhi &middot; A curated gallery of works</p>
   </header>
 
   <main>
-    <section class="slideshow" aria-label="Featured artwork slideshow">
+    <section class="featured-work" aria-label="Featured artwork">
+      <figure class="featured-figure">
+        <img
+          class="featured-image"
+          src="images/well-of-pure-source-axpure.jpg"
+          alt="The Well Of Pure Source, Axpure -- a radiant golden seed of light at the center of an ornate gilded frame, surrounded by swirling luminous waves beneath a starlit sky."
+        />
+        <figcaption class="featured-caption">
+          <span class="featured-title">The Well Of Pure Source, Axpure</span>
+          <p class="featured-author">
+            Author: This instant was created<br />
+            Created By Urartuhi Axpure, treasured for all eternity.<br />
+            Ax.
+          </p>
+        </figcaption>
+      </figure>
+    </section>
+
+    <section class="slideshow" aria-label="Additional artwork slideshow">
       <div class="slides" id="slides">
         <figure class="slide active" data-index="0">
           <div class="artwork artwork-1" role="img" aria-label="Placeholder artwork one"></div>
@@ -70,19 +88,20 @@
     </section>
 
     <section class="gallery-grid" aria-label="All artwork thumbnails">
-      <h2>Full collection</h2>
+      <h2>Additional pieces</h2>
       <div class="grid" id="grid"></div>
     </section>
 
     <section class="about">
       <h2>About this gallery</h2>
       <p>
-        This is a starter gallery for <strong>urartuhi.com</strong>. The
-        artwork slots above are placeholders -- replace the
+        <strong>An Instant In Eternity</strong> presents <em>The Well Of
+        Pure Source, Axpure</em> as the centerpiece of this gallery. The
+        additional slideshow pieces below are placeholders -- replace the
         <code>.artwork-N</code> background images in <code>style.css</code>,
         or swap the <code>&lt;div class="artwork"&gt;</code> elements for
         real <code>&lt;img&gt;</code> tags pointing at your own image files
-        under an <code>images/</code> folder, and update the titles/media
+        under the <code>images/</code> folder, and update the titles/media
         captions in <code>index.html</code>.
       </p>
     </section>

@@ -1,21 +1,29 @@
-# urartuhi.com
+# urartuhi.com -- An Instant In Eternity
 
-A static art gallery website with an auto-advancing slideshow, keyboard/
-click navigation, and a full-collection thumbnail grid.
+A static art gallery website. The main page ("An Instant In Eternity")
+features a single centerpiece artwork -- *The Well Of Pure Source,
+Axpure* -- with an author credit, followed by an additional-pieces
+slideshow with an auto-advancing slideshow, keyboard/click navigation,
+and a thumbnail grid.
 
 ## Structure
 
-- `index.html` -- page markup, six placeholder artwork slots.
-- `style.css` -- dark gallery theme, slideshow and grid layout.
+- `index.html` -- page markup: featured artwork section, then six
+  placeholder artwork slots in the slideshow/grid.
+- `style.css` -- dark gallery theme, featured-work, slideshow, and grid
+  layout.
 - `script.js` -- slideshow logic (auto-advance, prev/next, dots, play/pause,
   keyboard arrows, thumbnail-to-slide navigation). No build step or
   dependencies -- plain HTML/CSS/JS.
+- `images/well-of-pure-source-axpure.jpg` -- the featured centerpiece
+  artwork.
 
 ## Replacing the placeholder artwork
 
-Each slide currently uses a CSS gradient placeholder
-(`.artwork-1` .. `.artwork-6` in `style.css`) instead of real images, since
-no artwork files were provided yet. To use real artwork:
+The six slideshow slots below the featured piece currently use CSS
+gradient placeholders (`.artwork-1` .. `.artwork-6` in `style.css`)
+instead of real images, since no additional artwork files were provided
+yet. To use real artwork:
 
 1. Add image files under an `images/` folder (create it at the repo root).
 2. In `style.css`, replace each `.artwork-N` gradient with
