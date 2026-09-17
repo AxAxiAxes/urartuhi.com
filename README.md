@@ -40,8 +40,29 @@ This repository is deployed via **GitHub Pages** from the `main` branch
 (see repository Settings -> Pages), giving a live URL at
 `https://axaxiaxes.github.io/urartuhi.com/`.
 
-Pointing the real `urartuhi.com` domain at this site requires DNS changes
-(a CNAME/ALIAS record at whichever registrar/DNS host controls
-`urartuhi.com`) plus adding a `CNAME` file to this repo with the domain
-name. Neither of those steps can be completed from repository access
-alone -- they require the domain/DNS account owner's action.
+A `CNAME` file naming `urartuhi.com` has been added so GitHub Pages will
+serve the custom domain once DNS is pointed at it. Pointing the domain
+itself is a SiteGround DNS action outside this repository's control --
+see below.
+
+### Pointing urartuhi.com (hosted at SiteGround) to this GitHub Pages site
+
+1. Log in to SiteGround -> Site Tools -> **Domain** -> **DNS Zone Editor**
+   for `urartuhi.com`.
+2. Add these DNS records (delete any existing A/CNAME records for the
+   same names first, so they don't conflict):
+   - Four `A` records for the root/apex `@` (or `urartuhi.com`), pointing
+     to GitHub Pages' current IPs:
+     `185.199.108.153`, `185.199.109.153`, `185.199.110.153`,
+     `185.199.111.153`.
+   - One `CNAME` record for `www`, pointing to `axaxiaxes.github.io`.
+3. Wait for DNS propagation (can take anywhere from minutes to ~24
+   hours).
+4. In this repository's GitHub Settings -> Pages, confirm the custom
+   domain `urartuhi.com` shows as verified/active once DNS resolves.
+5. Enable "Enforce HTTPS" in that same Pages settings panel once the
+   certificate has been issued (GitHub provisions it automatically after
+   DNS is correctly pointed).
+
+This DNS change must be made by whoever holds the SiteGround login for
+this domain -- it cannot be done from GitHub or from this repository.
