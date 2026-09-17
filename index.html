@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Urartuhi | Art Gallery</title>
+  <meta name="description" content="Urartuhi -- a curated art gallery and slideshow." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <h1 class="wordmark">URARTUHI</h1>
+    <p class="tagline">A curated gallery of works</p>
+  </header>
+
+  <main>
+    <section class="slideshow" aria-label="Featured artwork slideshow">
+      <div class="slides" id="slides">
+        <figure class="slide active" data-index="0">
+          <div class="artwork artwork-1" role="img" aria-label="Placeholder artwork one"></div>
+          <figcaption>
+            <span class="title">Untitled I</span>
+            <span class="meta">Mixed media &middot; Placeholder</span>
+          </figcaption>
+        </figure>
+        <figure class="slide" data-index="1">
+          <div class="artwork artwork-2" role="img" aria-label="Placeholder artwork two"></div>
+          <figcaption>
+            <span class="title">Untitled II</span>
+            <span class="meta">Digital &middot; Placeholder</span>
+          </figcaption>
+        </figure>
+        <figure class="slide" data-index="2">
+          <div class="artwork artwork-3" role="img" aria-label="Placeholder artwork three"></div>
+          <figcaption>
+            <span class="title">Untitled III</span>
+            <span class="meta">Ink on paper &middot; Placeholder</span>
+          </figcaption>
+        </figure>
+        <figure class="slide" data-index="3">
+          <div class="artwork artwork-4" role="img" aria-label="Placeholder artwork four"></div>
+          <figcaption>
+            <span class="title">Untitled IV</span>
+            <span class="meta">Photography &middot; Placeholder</span>
+          </figcaption>
+        </figure>
+        <figure class="slide" data-index="4">
+          <div class="artwork artwork-5" role="img" aria-label="Placeholder artwork five"></div>
+          <figcaption>
+            <span class="title">Untitled V</span>
+            <span class="meta">Oil on canvas &middot; Placeholder</span>
+          </figcaption>
+        </figure>
+        <figure class="slide" data-index="5">
+          <div class="artwork artwork-6" role="img" aria-label="Placeholder artwork six"></div>
+          <figcaption>
+            <span class="title">Untitled VI</span>
+            <span class="meta">Sculpture study &middot; Placeholder</span>
+          </figcaption>
+        </figure>
+      </div>
+
+      <button class="nav prev" id="prevBtn" aria-label="Previous artwork">&#10094;</button>
+      <button class="nav next" id="nextBtn" aria-label="Next artwork">&#10095;</button>
+
+      <div class="controls">
+        <button class="play-pause" id="playPauseBtn" aria-label="Pause slideshow">Pause</button>
+        <div class="dots" id="dots" role="tablist" aria-label="Slide selector"></div>
+      </div>
+    </section>
+
+    <section class="gallery-grid" aria-label="All artwork thumbnails">
+      <h2>Full collection</h2>
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <section class="about">
+      <h2>About this gallery</h2>
+      <p>
+        This is a starter gallery for <strong>urartuhi.com</strong>. The
+        artwork slots above are placeholders -- replace the
+        <code>.artwork-N</code> background images in <code>style.css</code>,
+        or swap the <code>&lt;div class="artwork"&gt;</code> elements for
+        real <code>&lt;img&gt;</code> tags pointing at your own image files
+        under an <code>images/</code> folder, and update the titles/media
+        captions in <code>index.html</code>.
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; <span id="year"></span> Urartuhi.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,233 @@
+:root {
+  --bg: #0d0d0f;
+  --panel: #16161a;
+  --ink: #f2efe9;
+  --muted: #9a958c;
+  --accent: #c9a86a;
+  --border: #2a2a2f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Georgia", "Times New Roman", serif;
+  line-height: 1.5;
+}
+
+.site-header {
+  text-align: center;
+  padding: 3rem 1rem 1.5rem;
+}
+
+.wordmark {
+  margin: 0;
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  letter-spacing: 0.35em;
+  font-weight: 400;
+}
+
+.tagline {
+  margin: 0.5rem 0 0;
+  color: var(--muted);
+  font-style: italic;
+  letter-spacing: 0.05em;
+}
+
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1rem 3rem;
+}
+
+/* Slideshow */
+.slideshow {
+  position: relative;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.slides {
+  position: relative;
+  aspect-ratio: 16 / 10;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.6s ease;
+}
+
+.slide.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.artwork {
+  flex: 1;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Placeholder gradients standing in for real artwork images */
+.artwork-1 { background: linear-gradient(135deg, #4b2e83, #b8636c); }
+.artwork-2 { background: linear-gradient(135deg, #1f6f78, #c9a86a); }
+.artwork-3 { background: linear-gradient(135deg, #7a2e2e, #d9a441); }
+.artwork-4 { background: linear-gradient(135deg, #22303f, #6ba5b4); }
+.artwork-5 { background: linear-gradient(135deg, #2e4b2e, #a9c96a); }
+.artwork-6 { background: linear-gradient(135deg, #402e4b, #c96aa4); }
+
+figcaption {
+  padding: 1rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+figcaption .title {
+  font-size: 1.05rem;
+  letter-spacing: 0.03em;
+}
+
+figcaption .meta {
+  color: var(--muted);
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.nav {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.35);
+  border: none;
+  color: var(--ink);
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.nav:hover,
+.nav:focus-visible {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.nav.prev { left: 0.75rem; }
+.nav.next { right: 0.75rem; }
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.play-pause {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--ink);
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.85rem;
+}
+
+.play-pause:hover,
+.play-pause:focus-visible {
+  border-color: var(--accent);
+}
+
+.dots {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  border: none;
+  background: var(--border);
+  cursor: pointer;
+  padding: 0;
+}
+
+.dot.active {
+  background: var(--accent);
+}
+
+/* Grid of all artwork */
+.gallery-grid {
+  margin-top: 3rem;
+}
+
+.gallery-grid h2,
+.about h2 {
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.thumb {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.thumb:hover,
+.thumb:focus-visible {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+
+.about {
+  margin-top: 3rem;
+  color: var(--muted);
+}
+
+.about code {
+  color: var(--ink);
+  background: var(--panel);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+}
+
+.site-footer {
+  text-align: center;
+  padding: 2rem 1rem 3rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
