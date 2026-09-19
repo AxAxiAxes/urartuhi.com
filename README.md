@@ -8,31 +8,56 @@ and a thumbnail grid.
 
 ## Structure
 
-- `index.html` -- page markup: featured artwork section, then six
-  placeholder artwork slots in the slideshow/grid.
+- `index.html` -- page markup: featured artwork section, plus an
+  additional-pieces slideshow/grid that is populated dynamically by
+  JavaScript at page load.
 - `style.css` -- dark gallery theme, featured-work, slideshow, and grid
   layout.
-- `script.js` -- slideshow logic (auto-advance, prev/next, dots, play/pause,
-  keyboard arrows, thumbnail-to-slide navigation). No build step or
-  dependencies -- plain HTML/CSS/JS.
+- `script.js` -- fetches `images/manifest.json` and builds the slideshow
+  (auto-advance, prev/next, dots, play/pause, keyboard arrows) and
+  thumbnail grid from it. No build step or dependencies -- plain
+  HTML/CSS/JS.
 - `images/well-of-pure-source-axpure.jpg` -- the featured centerpiece
-  artwork.
+  artwork (shown separately, above the slideshow).
+- `images/manifest.json` -- the list of additional slideshow/grid
+  artworks. Starts empty (`[]`); the page shows a friendly "no pieces
+  yet" note until you add entries.
 
-## Replacing the placeholder artwork
+## Adding artwork (including bulk uploads)
 
-The six slideshow slots below the featured piece currently use CSS
-gradient placeholders (`.artwork-1` .. `.artwork-6` in `style.css`)
-instead of real images, since no additional artwork files were provided
-yet. To use real artwork:
+There is no fixed limit on how many images this page can hold -- it is a
+plain static site with no upload form or backend. "Uploading" means
+committing image files to this repository's `images/` folder and listing
+each one in `images/manifest.json`. Practical ceiling: GitHub blocks any
+single file over 100MB, and a repository should stay well under ~1GB as
+good practice; for ordinary compressed photos/art (a few hundred KB to a
+few MB each), that comfortably fits hundreds to low thousands of images.
 
-1. Add image files under an `images/` folder (create it at the repo root).
-2. In `style.css`, replace each `.artwork-N` gradient with
-   `background-image: url("images/your-file.jpg");`.
-3. In `index.html`, update the `aria-label` and the `.title` / `.meta`
-   figcaption text for each slide to match the real piece.
-4. Add or remove `<figure class="slide">` blocks in `index.html` to match
-   how many artworks you have -- the slideshow, dots, and grid all
-   generate themselves from however many `.slide` elements exist.
+To add one or many images at once:
+
+1. Add the image file(s) under `images/` (any typical web image format:
+   `.jpg`, `.png`, `.webp`, etc).
+2. Add one object per image to the `images/manifest.json` array:
+
+   ```json
+   [
+     {
+       "file": "your-file-name.jpg",
+       "title": "Piece title",
+       "meta": "Medium · Year",
+       "alt": "A short description of the image for accessibility"
+     }
+   ]
+   ```
+
+3. Commit and push (or hand the files + titles to whoever manages this
+   repo to commit in one batch) -- the page picks up any number of
+   manifest entries automatically, in the order listed, with no other
+   code changes required.
+
+The featured centerpiece image above the slideshow is separate (a single
+`<img>` in `index.html`) and is not part of the manifest; swap its `src`
+directly in `index.html` to change it.
 
 ## Local preview
 

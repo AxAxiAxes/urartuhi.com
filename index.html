@@ -33,50 +33,7 @@
     </section>
 
     <section class="slideshow" aria-label="Additional artwork slideshow">
-      <div class="slides" id="slides">
-        <figure class="slide active" data-index="0">
-          <div class="artwork artwork-1" role="img" aria-label="Placeholder artwork one"></div>
-          <figcaption>
-            <span class="title">Untitled I</span>
-            <span class="meta">Mixed media &middot; Placeholder</span>
-          </figcaption>
-        </figure>
-        <figure class="slide" data-index="1">
-          <div class="artwork artwork-2" role="img" aria-label="Placeholder artwork two"></div>
-          <figcaption>
-            <span class="title">Untitled II</span>
-            <span class="meta">Digital &middot; Placeholder</span>
-          </figcaption>
-        </figure>
-        <figure class="slide" data-index="2">
-          <div class="artwork artwork-3" role="img" aria-label="Placeholder artwork three"></div>
-          <figcaption>
-            <span class="title">Untitled III</span>
-            <span class="meta">Ink on paper &middot; Placeholder</span>
-          </figcaption>
-        </figure>
-        <figure class="slide" data-index="3">
-          <div class="artwork artwork-4" role="img" aria-label="Placeholder artwork four"></div>
-          <figcaption>
-            <span class="title">Untitled IV</span>
-            <span class="meta">Photography &middot; Placeholder</span>
-          </figcaption>
-        </figure>
-        <figure class="slide" data-index="4">
-          <div class="artwork artwork-5" role="img" aria-label="Placeholder artwork five"></div>
-          <figcaption>
-            <span class="title">Untitled V</span>
-            <span class="meta">Oil on canvas &middot; Placeholder</span>
-          </figcaption>
-        </figure>
-        <figure class="slide" data-index="5">
-          <div class="artwork artwork-6" role="img" aria-label="Placeholder artwork six"></div>
-          <figcaption>
-            <span class="title">Untitled VI</span>
-            <span class="meta">Sculpture study &middot; Placeholder</span>
-          </figcaption>
-        </figure>
-      </div>
+      <div class="slides" id="slides"></div>
 
       <button class="nav prev" id="prevBtn" aria-label="Previous artwork">&#10094;</button>
       <button class="nav next" id="nextBtn" aria-label="Next artwork">&#10095;</button>
@@ -96,13 +53,12 @@
       <h2>About this gallery</h2>
       <p>
         <strong>An Instant In Eternity</strong> presents <em>The Well Of
-        Pure Source, Axpure</em> as the centerpiece of this gallery. The
-        additional slideshow pieces below are placeholders -- replace the
-        <code>.artwork-N</code> background images in <code>style.css</code>,
-        or swap the <code>&lt;div class="artwork"&gt;</code> elements for
-        real <code>&lt;img&gt;</code> tags pointing at your own image files
-        under the <code>images/</code> folder, and update the titles/media
-        captions in <code>index.html</code>.
+        Pure Source, Axpure</em> as the centerpiece of this gallery.
+        Additional slideshow pieces are loaded from
+        <code>images/manifest.json</code> -- add an image file under
+        <code>images/</code> and one matching entry to that manifest to add
+        a new piece to the gallery; there is no fixed limit on how many
+        entries it can hold. See the README for the exact format.
       </p>
     </section>
   </main>
