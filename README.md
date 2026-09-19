@@ -67,6 +67,33 @@ The featured centerpiece image above the slideshow is separate (a single
 `<img>` in `index.html`) and is not part of the manifest; swap its `src`
 directly in `index.html` to change it.
 
+### Auto-captioning new uploads
+
+You no longer have to hand-write `title`/`meta`/`alt`/`tags` for every new
+image. `.github/workflows/auto-caption.yml` runs
+`scripts/auto-caption.js` automatically on every push that adds files
+under `images/gallery/`:
+
+1. It scans `images/gallery/` for any file that is missing from
+   `images/manifest.json`, or whose entry still has the placeholder
+   `"Uncaptioned upload - edit images/manifest.json to add a title"`
+   text.
+2. For each one, it sends the image to OpenAI's vision-capable chat
+   completions API and asks for a short title, one-line description,
+   accessible alt text, and 2-4 tags.
+3. It writes the results back into `images/manifest.json` and commits
+   the change automatically.
+
+**Setup required (one-time):** add an `OPENAI_API_KEY` repository secret
+(Settings -> Secrets and variables -> Actions -> New repository secret).
+Without it, the workflow runs but makes no changes -- it never fabricates
+captions or fails the build. Existing hand-written captions are never
+overwritten; only placeholder/missing entries are touched.
+
+You can also run it manually via the Actions tab ("Auto-caption gallery
+uploads" -> Run workflow), or locally with `OPENAI_API_KEY=... node
+scripts/auto-caption.js`.
+
 ## Scaling to a large collection
 
 This site is designed to scale the same way image-heavy sites like
