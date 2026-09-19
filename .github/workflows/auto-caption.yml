@@ -1,0 +1,32 @@
+name: Auto-caption gallery uploads
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "images/gallery/**"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  caption:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run auto-caption script
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: node scripts/auto-caption.js
+
+      - name: Commit updated manifest
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "AI: auto-caption new gallery uploads"
+          file_pattern: images/manifest.json
