@@ -1,0 +1,253 @@
+/* Avatar Generator page -- extends style.css's tokens (--bg, --panel,
+   --accent, --border, --muted, --ink). Keep this file scoped to the
+   avatar page only. */
+
+.avatar-nav {
+  margin-top: 0.75rem;
+}
+
+.avatar-nav a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+}
+
+.avatar-nav a:hover,
+.avatar-nav a:focus-visible {
+  color: var(--accent);
+}
+
+.avatar-main {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 1rem 3rem;
+}
+
+.avatar-studio {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 800px) {
+  .avatar-studio {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.avatar-form,
+.avatar-preview-panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.avatar-form h2,
+.avatar-preview-panel h2 {
+  margin-top: 0;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+}
+
+.field {
+  display: block;
+  margin-bottom: 1.1rem;
+}
+
+.field span {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+}
+
+.field input[type="file"],
+.field textarea,
+.field select {
+  width: 100%;
+  background: var(--bg);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.6rem 0.7rem;
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.field textarea {
+  resize: vertical;
+}
+
+.field input[type="file"] {
+  padding: 0.5rem;
+}
+
+.field select:focus-visible,
+.field textarea:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.reference-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: -0.5rem 0 1.1rem;
+}
+
+.reference-preview img {
+  width: 3.25rem;
+  height: 3.25rem;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+
+.link-btn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  text-decoration: underline;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 0;
+}
+
+.link-btn:hover,
+.link-btn:focus-visible {
+  color: var(--accent);
+}
+
+.generate-btn,
+.save-btn,
+.download-btn {
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  border-radius: 999px;
+  padding: 0.65rem 1.5rem;
+  font-family: inherit;
+  font-size: 0.95rem;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.generate-btn:hover,
+.save-btn:not(:disabled):hover,
+.download-btn:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+.save-btn:disabled,
+.download-btn:disabled {
+  background: var(--border);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+.avatar-status {
+  margin: 0.85rem 0 0;
+  min-height: 1.2em;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.avatar-status.is-error {
+  color: #d98a8a;
+}
+
+.avatar-status.is-success {
+  color: var(--accent);
+}
+
+/* Gold ornamental frame + Axpure water-light glow, for the avatar preview */
+.gold-frame {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  padding: 0.6rem;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #7a5a26, #c9a86a 35%, #f4e3ad 50%, #c9a86a 65%, #7a5a26);
+  box-shadow: 0 0 0 1px rgba(201, 168, 106, 0.4), 0 0 35px rgba(201, 168, 106, 0.25);
+}
+
+.gold-frame::before {
+  content: "";
+  position: absolute;
+  inset: 0.2rem;
+  border-radius: 9px;
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+.gold-frame-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(120, 170, 200, 0.35), transparent 60%),
+    radial-gradient(circle at 50% 110%, rgba(80, 140, 190, 0.3), transparent 65%),
+    var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gold-frame-inner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.gold-frame-placeholder {
+  color: var(--muted);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 1.5rem;
+  margin: 0;
+}
+
+.preview-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.recent-avatars .recent-note {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.recent-avatars .thumb {
+  position: relative;
+}
+
+.recent-avatars .thumb .thumb-remove {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.35rem;
+  background: rgba(0, 0, 0, 0.6);
+  color: var(--ink);
+  border: none;
+  border-radius: 50%;
+  width: 1.5rem;
+  height: 1.5rem;
+  line-height: 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 0;
+}
+
+.recent-avatars .thumb .thumb-remove:hover {
+  background: rgba(0, 0, 0, 0.85);
+}
