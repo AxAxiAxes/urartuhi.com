@@ -96,5 +96,31 @@ app.post('/api/companion-chat', async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+// Backs the /companion page's optional higher-quality voice. Wraps
+// OpenAI's TTS API (tts-1) and reuses OPENAI_API_KEY. `voice` must be one
+// of OpenAI's supported voices; defaults to "nova" (a warm, natural
+// female-sounding voice) rather than a random/robotic default. If this
+// route is unavailable, the client falls back to the browser's built-in
+// SpeechSynthesis voices.
+const SUPPORTED_TTS_VOICES = ['nova', 'shimmer', 'alloy', 'echo', 'fable', 'onyx'];
+app.post('/api/tts', async (req, res) => {
+  const { text, voice } = req.body;
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) return res.status(500).json({ error: 'OPENAI_API_KEY missing on Railway' });
+  if (!text) return res.status(400).json({ error: 'text is required' });
+  const chosenVoice = SUPPORTED_TTS_VOICES.includes(voice) ? voice : 'nova';
+
+  try {
+    const openaiRes = await fetch("https://api.openai.com/v1/audio/speech", {
+      method: "POST",
+      headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ model: "tts-1", voice: chosenVoice, input: text, response_format: "mp3" }),
+    });
+    if (!openaiRes.ok) { const err = await openaiRes.text(); return res.status(openaiRes.status).json({ error: err }); }
+    const arrayBuffer = await openaiRes.arrayBuffer();
+    res.json({ audio: Buffer.from(arrayBuffer).toString('base64'), format: 'mp3' });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 const port = process.env.PORT || 3001;
 app.listen(port, () => console.log(`Urartuhi docent live on ${port}`));

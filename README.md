@@ -113,12 +113,22 @@ a short personality description, then chat with it.
   one.
 - Conversation history is kept in memory only (cleared on page reload /
   "End chat"); nothing is persisted to the gallery or manifest.
-- **Voice**: uses browser-native APIs only, no extra backend/API key. A
-  mic button (shown only if the browser supports `SpeechRecognition` --
-  Chrome/Edge) transcribes speech into the message box; a "Speak replies
-  aloud" toggle uses `SpeechSynthesis` to read companion replies out loud,
-  with the avatar's gold frame pulsing while it speaks (a lightweight
-  stand-in for real lip-sync, which isn't feasible for a static image).
+- **Voice**: prefers higher-quality speech via `POST /api/tts` (OpenAI
+  TTS, `tts-1`) with a voice picker (`nova` female voice by default, plus
+  shimmer/alloy/echo/fable/onyx) -- falls back automatically to the
+  browser's built-in `SpeechSynthesis` (attempting to auto-pick a
+  female-sounding system voice) if the backend TTS call fails or the
+  backend isn't deployed. A mic button (shown only if the browser supports
+  `SpeechRecognition` -- Chrome/Edge) transcribes speech into the message
+  box. While the companion is speaking, the avatar's gold frame pulses and
+  a small "mouth-flap" bar animates -- a lightweight stand-in for real
+  lip-sync, which isn't feasible for a static image, not true viseme-based
+  animation.
+- **Continuing straight from the avatar generator**: the "Chat with this
+  avatar" button on `/avatar` auto-saves the current avatar and opens
+  `/companion?avatar=<id>`, which preselects that avatar and jumps
+  straight into a chat -- so generating and interacting feel like one
+  flow instead of two disconnected tools.
 
 ## Avatar Generator (`/avatar`, `avatar.html`)
 
@@ -141,6 +151,9 @@ grid component used by the main gallery.
   hardcoded in this repo. If the key is missing (or the route hasn't been
   deployed yet), the page shows a friendly inline error instead of crashing.
   Swap the provider by editing `generateAvatar()` and/or the backend route.
+- A **"Photorealistic" checkbox** appends realism wording (natural skin
+  texture, camera-like lighting/depth of field) to the prompt regardless of
+  which style preset is selected, for a more realistic-looking result.
 - **"Save to Gallery" is browser-local only.** This is a static site with
   no server-side write access from the browser, so saved avatars are kept
   in `localStorage` (per browser) and rendered in the "Recently generated"

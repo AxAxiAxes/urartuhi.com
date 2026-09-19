@@ -53,6 +53,11 @@
           </select>
         </label>
 
+        <label class="field checkbox-field" for="realisticToggle">
+          <input type="checkbox" id="realisticToggle" />
+          <span>Photorealistic (natural skin/lighting, not a stylized painting)</span>
+        </label>
+
         <button type="submit" class="generate-btn" id="generateBtn">Generate</button>
 
         <p class="avatar-status" id="avatarStatus" role="status" aria-live="polite"></p>
@@ -72,6 +77,9 @@
           <button type="button" class="save-btn" id="saveBtn" disabled>Save to Gallery</button>
           <button type="button" class="download-btn" id="downloadBtn" disabled>Download</button>
         </div>
+        <button type="button" class="generate-btn chat-with-avatar-btn" id="chatWithAvatarBtn" disabled>
+          Chat with this avatar &rarr;
+        </button>
       </div>
     </section>
 

@@ -11,10 +11,12 @@
   const companionAvatarImg = document.getElementById("companionAvatarImg");
   const personaNameField = document.getElementById("personaName");
   const personaDescriptionField = document.getElementById("personaDescription");
+  const voiceSelect = document.getElementById("voiceSelect");
   const startChatBtn = document.getElementById("startChatBtn");
   const chatPanel = document.getElementById("chatPanel");
   const chatAvatarFrame = document.getElementById("chatAvatarFrame");
   const chatAvatarImg = document.getElementById("chatAvatarImg");
+  const mouthFlap = document.getElementById("mouthFlap");
   const speakToggle = document.getElementById("speakToggle");
   const micBtn = document.getElementById("micBtn");
   const chatWindow = document.getElementById("chatWindow");
@@ -28,25 +30,123 @@
   let history = []; // [{ role: "user" | "companion", content: "" }]
   let persona = null;
   let selectedAvatarDataUrl = null;
+  let mouthFlapTimer = null;
+  let currentAudio = null;
 
-  // ---------------------------------------------------------------------
-  // Voice output: browser-native SpeechSynthesis (no backend/API key
-  // needed). Pulses the gold-frame avatar while speaking as a lightweight
-  // stand-in for real lip-sync, which isn't feasible for a static image.
-  // ---------------------------------------------------------------------
-  const speechSupported = "speechSynthesis" in window;
-
-  function speak(text) {
-    if (!speechSupported || !speakToggle.checked) {
+  function startMouthFlap() {
+    if (chatAvatarFrame.hidden) {
       return;
     }
-    window.speechSynthesis.cancel(); // don't overlap with a prior reply
+    chatAvatarFrame.classList.add("is-speaking");
+    mouthFlap.hidden = false;
+    stopMouthFlap(); // clear any previous timer first
+    mouthFlapTimer = window.setInterval(() => {
+      mouthFlap.classList.toggle("flap-open");
+    }, 130 + Math.random() * 90);
+  }
+
+  function stopMouthFlap() {
+    if (mouthFlapTimer) {
+      window.clearInterval(mouthFlapTimer);
+      mouthFlapTimer = null;
+    }
+    mouthFlap.classList.remove("flap-open");
+    mouthFlap.hidden = true;
+    chatAvatarFrame.classList.remove("is-speaking");
+  }
+
+  // ---------------------------------------------------------------------
+  // Voice output. Prefers higher-quality OpenAI TTS (window.URARTUHI_TTS_
+  // BACKEND, POST /api/tts) with a user-selectable voice (defaults to
+  // "nova", a warm natural female voice) so it isn't stuck with a random
+  // robotic system default. Falls back to the browser's built-in
+  // SpeechSynthesis (preferring a female-sounding voice if one is
+  // available) if the backend is unreachable/not configured, so voice
+  // output always works. Animates a simple mouth-flap on the avatar while
+  // audio is actually playing.
+  // ---------------------------------------------------------------------
+  const speechSupported = "speechSynthesis" in window;
+  let cachedBrowserVoices = [];
+
+  function refreshBrowserVoices() {
+    if (speechSupported) {
+      cachedBrowserVoices = window.speechSynthesis.getVoices();
+    }
+  }
+  refreshBrowserVoices();
+  if (speechSupported) {
+    window.speechSynthesis.addEventListener("voiceschanged", refreshBrowserVoices);
+  }
+
+  function pickFemaleBrowserVoice() {
+    // Voice metadata is inconsistent across browsers/OSes -- there's no
+    // reliable "gender" field, so this matches on common naming patterns
+    // for widely-shipped female English voices as a best-effort default.
+    const femaleNamePattern = /female|zira|susan|samantha|victoria|karen|moira|tessa|fiona|serena|allison|ava|joanna|salli|kendra|kimberly|ivy|google uk english female|google us english/i;
+    return (
+      cachedBrowserVoices.find(
+        (voice) => femaleNamePattern.test(voice.name) && voice.lang.startsWith("en")
+      ) || cachedBrowserVoices.find((voice) => femaleNamePattern.test(voice.name)) || null
+    );
+  }
+
+  function speakWithBrowserVoice(text) {
+    if (!speechSupported) {
+      return;
+    }
+    window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.rate = 1.0;
-    utterance.onstart = () => chatAvatarFrame.classList.add("is-speaking");
-    utterance.onend = () => chatAvatarFrame.classList.remove("is-speaking");
-    utterance.onerror = () => chatAvatarFrame.classList.remove("is-speaking");
+    const femaleVoice = pickFemaleBrowserVoice();
+    if (femaleVoice) {
+      utterance.voice = femaleVoice;
+    }
+    utterance.onstart = startMouthFlap;
+    utterance.onend = stopMouthFlap;
+    utterance.onerror = stopMouthFlap;
     window.speechSynthesis.speak(utterance);
+  }
+
+  async function speak(text) {
+    if (!speakToggle.checked) {
+      return;
+    }
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio = null;
+    }
+
+    const ttsBackendUrl = window.URARTUHI_TTS_BACKEND;
+    if (ttsBackendUrl) {
+      try {
+        const response = await fetch(ttsBackendUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text, voice: voiceSelect.value }),
+        });
+        if (response.ok) {
+          const data = await response.json();
+          if (data && data.audio) {
+            const audio = new Audio(`data:audio/${data.format || "mp3"};base64,${data.audio}`);
+            currentAudio = audio;
+            audio.addEventListener("play", startMouthFlap);
+            audio.addEventListener("ended", stopMouthFlap);
+            audio.addEventListener("pause", stopMouthFlap);
+            audio.addEventListener("error", () => {
+              stopMouthFlap();
+              speakWithBrowserVoice(text); // fall back if playback fails
+            });
+            await audio.play();
+            return;
+          }
+        }
+      } catch (error) {
+        // Backend unreachable/unconfigured -- fall through to the browser
+        // voice below rather than silently producing no sound at all.
+      }
+    }
+
+    speakWithBrowserVoice(text);
   }
 
   // ---------------------------------------------------------------------
@@ -112,21 +212,50 @@
       option.textContent = entry.title || "Saved avatar";
       avatarPicker.appendChild(option);
     });
+    return entries;
   }
 
-  avatarPicker.addEventListener("change", () => {
-    const entries = loadRecentAvatars();
-    const selected = entries.find((entry) => entry.id === avatarPicker.value);
-    if (selected) {
-      selectedAvatarDataUrl = selected.dataUrl;
-      companionAvatarImg.src = selected.dataUrl;
+  function applySelectedAvatar(entry) {
+    if (entry) {
+      selectedAvatarDataUrl = entry.dataUrl;
+      companionAvatarImg.src = entry.dataUrl;
       companionAvatarFrame.hidden = false;
     } else {
       selectedAvatarDataUrl = null;
       companionAvatarFrame.hidden = true;
       companionAvatarImg.src = "";
     }
+  }
+
+  avatarPicker.addEventListener("change", () => {
+    const entries = loadRecentAvatars();
+    applySelectedAvatar(entries.find((entry) => entry.id === avatarPicker.value));
   });
+
+  // Arriving from the avatar generator's "Chat with this avatar" button
+  // (avatar.html sets ?avatar=<id> after auto-saving it) -- preselect that
+  // avatar, prefill a persona name from its prompt, and jump straight into
+  // the chat so generating and interacting feel like one continuous flow.
+  function applyIncomingAvatarFromUrl(entries) {
+    const params = new URLSearchParams(window.location.search);
+    const incomingId = params.get("avatar");
+    if (!incomingId) {
+      return;
+    }
+    const entry = entries.find((candidate) => candidate.id === incomingId);
+    if (!entry) {
+      return;
+    }
+    avatarPicker.value = entry.id;
+    applySelectedAvatar(entry);
+    if (!personaNameField.value.trim()) {
+      personaNameField.value = (entry.title || "Your avatar").slice(0, 40);
+    }
+    if (!personaDescriptionField.value.trim() && entry.alt) {
+      personaDescriptionField.value = entry.alt.slice(0, 200);
+    }
+    startChatBtn.click();
+  }
 
   function setChatStatus(message, kind) {
     chatStatus.textContent = message || "";
@@ -254,7 +383,8 @@
     }
   });
 
-  populateAvatarPicker();
+  const initialAvatarEntries = populateAvatarPicker();
+  applyIncomingAvatarFromUrl(initialAvatarEntries);
 
   if (yearSpan) {
     yearSpan.textContent = new Date().getFullYear();

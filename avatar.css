@@ -93,6 +93,20 @@
   border-color: var(--accent);
 }
 
+.checkbox-field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.checkbox-field input[type="checkbox"] {
+  width: auto;
+}
+
+.checkbox-field span {
+  margin-bottom: 0;
+}
+
 .reference-preview {
   display: flex;
   align-items: center;
@@ -220,6 +234,18 @@
   display: flex;
   gap: 0.75rem;
   margin-top: 1rem;
+}
+
+.chat-with-avatar-btn {
+  display: block;
+  width: 100%;
+  margin-top: 0.75rem;
+}
+
+.chat-with-avatar-btn:disabled {
+  background: var(--border);
+  color: var(--muted);
+  cursor: not-allowed;
 }
 
 .recent-avatars .recent-note {
