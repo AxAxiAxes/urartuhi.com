@@ -113,6 +113,12 @@ a short personality description, then chat with it.
   one.
 - Conversation history is kept in memory only (cleared on page reload /
   "End chat"); nothing is persisted to the gallery or manifest.
+- **Voice**: uses browser-native APIs only, no extra backend/API key. A
+  mic button (shown only if the browser supports `SpeechRecognition` --
+  Chrome/Edge) transcribes speech into the message box; a "Speak replies
+  aloud" toggle uses `SpeechSynthesis` to read companion replies out loud,
+  with the avatar's gold frame pulsing while it speaks (a lightweight
+  stand-in for real lip-sync, which isn't feasible for a static image).
 
 ## Avatar Generator (`/avatar`, `avatar.html`)
 

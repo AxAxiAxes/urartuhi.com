@@ -61,6 +61,17 @@
     </section>
 
     <section class="companion-chat-panel" id="chatPanel" hidden aria-label="Conversation">
+      <div class="chat-companion-face">
+        <div class="chat-avatar-frame gold-frame" id="chatAvatarFrame" hidden>
+          <div class="gold-frame-inner">
+            <img id="chatAvatarImg" alt="Companion avatar" />
+          </div>
+        </div>
+        <label class="voice-toggle">
+          <input type="checkbox" id="speakToggle" checked />
+          <span>Speak replies aloud</span>
+        </label>
+      </div>
       <div class="chat-window" id="chatWindow" role="log" aria-live="polite"></div>
       <form class="chat-input-row" id="chatForm">
         <label class="sr-only" for="chatMessage">Message</label>
@@ -71,6 +82,7 @@
           autocomplete="off"
           required
         />
+        <button type="button" class="mic-btn" id="micBtn" title="Speak your message" hidden>&#127908;</button>
         <button type="submit" class="generate-btn" id="sendBtn">Send</button>
       </form>
       <p class="chat-status" id="chatStatus" role="status" aria-live="polite"></p>

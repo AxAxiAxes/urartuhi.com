@@ -13,6 +13,10 @@
   const personaDescriptionField = document.getElementById("personaDescription");
   const startChatBtn = document.getElementById("startChatBtn");
   const chatPanel = document.getElementById("chatPanel");
+  const chatAvatarFrame = document.getElementById("chatAvatarFrame");
+  const chatAvatarImg = document.getElementById("chatAvatarImg");
+  const speakToggle = document.getElementById("speakToggle");
+  const micBtn = document.getElementById("micBtn");
   const chatWindow = document.getElementById("chatWindow");
   const chatForm = document.getElementById("chatForm");
   const chatMessageField = document.getElementById("chatMessage");
@@ -23,6 +27,72 @@
 
   let history = []; // [{ role: "user" | "companion", content: "" }]
   let persona = null;
+  let selectedAvatarDataUrl = null;
+
+  // ---------------------------------------------------------------------
+  // Voice output: browser-native SpeechSynthesis (no backend/API key
+  // needed). Pulses the gold-frame avatar while speaking as a lightweight
+  // stand-in for real lip-sync, which isn't feasible for a static image.
+  // ---------------------------------------------------------------------
+  const speechSupported = "speechSynthesis" in window;
+
+  function speak(text) {
+    if (!speechSupported || !speakToggle.checked) {
+      return;
+    }
+    window.speechSynthesis.cancel(); // don't overlap with a prior reply
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 1.0;
+    utterance.onstart = () => chatAvatarFrame.classList.add("is-speaking");
+    utterance.onend = () => chatAvatarFrame.classList.remove("is-speaking");
+    utterance.onerror = () => chatAvatarFrame.classList.remove("is-speaking");
+    window.speechSynthesis.speak(utterance);
+  }
+
+  // ---------------------------------------------------------------------
+  // Voice input: browser-native SpeechRecognition (Chrome/Edge only --
+  // feature-detected, mic button stays hidden elsewhere). Transcribes
+  // speech into the message field; the user still presses Send, so
+  // nothing is auto-submitted from a misheard phrase.
+  // ---------------------------------------------------------------------
+  const SpeechRecognitionCtor =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+  let recognizer = null;
+  let listening = false;
+
+  if (SpeechRecognitionCtor) {
+    micBtn.hidden = false;
+    recognizer = new SpeechRecognitionCtor();
+    recognizer.continuous = false;
+    recognizer.interimResults = false;
+    recognizer.lang = "en-US";
+
+    recognizer.addEventListener("result", (event) => {
+      const transcript = event.results[0][0].transcript;
+      chatMessageField.value = transcript;
+      chatMessageField.focus();
+    });
+    recognizer.addEventListener("end", () => {
+      listening = false;
+      micBtn.classList.remove("is-listening");
+    });
+    recognizer.addEventListener("error", () => {
+      listening = false;
+      micBtn.classList.remove("is-listening");
+      setChatStatus("Could not hear that -- try typing instead.", "error");
+    });
+
+    micBtn.addEventListener("click", () => {
+      if (listening) {
+        recognizer.stop();
+        return;
+      }
+      listening = true;
+      micBtn.classList.add("is-listening");
+      setChatStatus("Listening...");
+      recognizer.start();
+    });
+  }
 
   function loadRecentAvatars() {
     try {
@@ -48,9 +118,11 @@
     const entries = loadRecentAvatars();
     const selected = entries.find((entry) => entry.id === avatarPicker.value);
     if (selected) {
+      selectedAvatarDataUrl = selected.dataUrl;
       companionAvatarImg.src = selected.dataUrl;
       companionAvatarFrame.hidden = false;
     } else {
+      selectedAvatarDataUrl = null;
       companionAvatarFrame.hidden = true;
       companionAvatarImg.src = "";
     }
@@ -78,13 +150,20 @@
     history = [];
     chatWindow.innerHTML = "";
     chatPanel.hidden = false;
+
+    if (selectedAvatarDataUrl) {
+      chatAvatarImg.src = selectedAvatarDataUrl;
+      chatAvatarFrame.hidden = false;
+    } else {
+      chatAvatarFrame.hidden = true;
+    }
+
     setChatStatus("");
-    appendBubble(
-      "companion",
-      `Hi, I'm ${name}. ${description
-        .charAt(0)
-        .toUpperCase()}${description.slice(1)} What would you like to chat about?`
-    );
+    const greeting = `Hi, I'm ${name}. ${description
+      .charAt(0)
+      .toUpperCase()}${description.slice(1)} What would you like to chat about?`;
+    appendBubble("companion", greeting);
+    speak(greeting);
     chatMessageField.focus();
   });
 
@@ -94,6 +173,12 @@
     chatWindow.innerHTML = "";
     chatPanel.hidden = true;
     setChatStatus("");
+    if (speechSupported) {
+      window.speechSynthesis.cancel();
+    }
+    if (recognizer && listening) {
+      recognizer.stop();
+    }
   });
 
   // ---------------------------------------------------------------------
@@ -153,6 +238,7 @@
         message,
       });
       appendBubble("companion", reply);
+      speak(reply);
       history.push({ role: "companion", content: reply });
       history = history.slice(-CHAT_HISTORY_LIMIT);
       setChatStatus("");
