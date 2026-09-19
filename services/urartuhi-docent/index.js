@@ -4,7 +4,9 @@ const app = express();
 app.use(cors({
   origin: ['https://urartuhi.com', 'https://www.urartuhi.com', 'http://localhost:3000', 'http://localhost:5173']
 }));
-app.use(express.json());
+// Reference-image uploads on /avatar are sent as base64 data URLs, which
+// can comfortably exceed Express's default 100kb JSON body limit.
+app.use(express.json({ limit: '10mb' }));
 app.get('/', (req, res) => res.json({ name: 'Urartuhi Docent', status: 'live' }));
 app.post('/api/narrate', async (req, res) => {
   const { imageUrl, pieceId, question } = req.body;
