@@ -2,23 +2,25 @@
 
 A static art gallery website. The main page ("An Instant In Eternity")
 features a single centerpiece artwork -- *The Well Of Pure Source,
-Axpure* -- with an author credit, followed by an additional-pieces
-slideshow with an auto-advancing slideshow, keyboard/click navigation,
-and a thumbnail grid.
+Axpure* -- with an author credit, followed by an additional-pieces area:
+an auto-advancing slideshow with keyboard/click navigation, and a
+Pinterest-style masonry thumbnail grid with optional tag filtering.
 
 ## Structure
 
 - `index.html` -- page markup: featured artwork section, plus an
-  additional-pieces slideshow/grid that is populated dynamically by
-  JavaScript at page load.
-- `style.css` -- dark gallery theme, featured-work, slideshow, and grid
-  layout.
+  additional-pieces slideshow/tag-filter/grid that is populated
+  dynamically by JavaScript at page load.
+- `style.css` -- dark gallery theme, featured-work, slideshow, masonry
+  grid, and tag-filter layout.
 - `script.js` -- fetches `images/manifest.json` and builds the slideshow
-  (auto-advance, prev/next, dots, play/pause, keyboard arrows) and
-  thumbnail grid from it. No build step or dependencies -- plain
-  HTML/CSS/JS.
+  (auto-advance, prev/next, dots or a "N / total" counter once past
+  `DOT_UI_LIMIT` pieces, play/pause, keyboard arrows), the tag-filter bar,
+  and the masonry thumbnail grid from it. No build step or dependencies
+  -- plain HTML/CSS/JS.
 - `images/well-of-pure-source-axpure.jpg` -- the featured centerpiece
   artwork (shown separately, above the slideshow).
+- `images/gallery/` -- additional artwork image files.
 - `images/manifest.json` -- the list of additional slideshow/grid
   artworks. Starts empty (`[]`); the page shows a friendly "no pieces
   yet" note until you add entries.
@@ -36,19 +38,25 @@ few MB each), that comfortably fits hundreds to low thousands of images.
 To add one or many images at once:
 
 1. Add the image file(s) under `images/` (any typical web image format:
-   `.jpg`, `.png`, `.webp`, etc).
+   `.jpg`, `.png`, `.webp`, `.gif`, etc).
 2. Add one object per image to the `images/manifest.json` array:
 
    ```json
    [
      {
-       "file": "your-file-name.jpg",
+       "file": "gallery/your-file-name.jpg",
        "title": "Piece title",
        "meta": "Medium · Year",
-       "alt": "A short description of the image for accessibility"
+       "alt": "A short description of the image for accessibility",
+       "tags": ["portrait", "gold"]
      }
    ]
    ```
+
+   `tags` is optional -- omit it (or leave it `[]`) for an untagged
+   piece. Any entry with tags automatically appears under the matching
+   filter button(s) in the "Additional pieces" section; the filter bar
+   itself only appears once at least one entry has tags.
 
 3. Commit and push (or hand the files + titles to whoever manages this
    repo to commit in one batch) -- the page picks up any number of
@@ -58,6 +66,33 @@ To add one or many images at once:
 The featured centerpiece image above the slideshow is separate (a single
 `<img>` in `index.html`) and is not part of the manifest; swap its `src`
 directly in `index.html` to change it.
+
+## Scaling to a large collection
+
+This site is designed to scale the same way image-heavy sites like
+Pinterest do at small scale: images are stored as flat files and indexed
+by a manifest, not hand-authored per-piece markup, so growth is a data
+change, not a code change. Specifically:
+
+- **Masonry grid** -- the thumbnail grid uses CSS `columns` and keeps
+  each image's natural aspect ratio (no forced square crop), so it looks
+  and scales the same with 10 images or 1,000.
+- **Tag filtering** -- add a `tags` array to any manifest entry to make
+  the collection browsable by category as it grows, instead of one long
+  undifferentiated grid.
+- **Slideshow dot limit** -- one dot per slide stops being usable well
+  before a few dozen pieces, so past `DOT_UI_LIMIT` (12, in `script.js`)
+  the slideshow shows a plain "N / total" counter instead; prev/next
+  arrows, keyboard arrows, and grid thumbnails still navigate normally.
+- **Lazy loading** -- both slideshow and grid images use
+  `loading="lazy"`, so the browser only fetches images as they scroll
+  into view.
+- What this site intentionally does **not** add: cookie-based tracking,
+  personalized/algorithmic ranking, or a real upload form/backend. It is
+  a static GitHub Pages site with no server; genuine personalization
+  would need a backend and would also raise cookie-consent/privacy
+  obligations (e.g. GDPR/CCPA) that are a founder decision, not a
+  default addition.
 
 ## Local preview
 

@@ -41,11 +41,13 @@
       <div class="controls">
         <button class="play-pause" id="playPauseBtn" aria-label="Pause slideshow">Pause</button>
         <div class="dots" id="dots" role="tablist" aria-label="Slide selector"></div>
+        <span class="slide-counter" id="slideCounter" hidden></span>
       </div>
     </section>
 
     <section class="gallery-grid" aria-label="All artwork thumbnails">
       <h2>Additional pieces</h2>
+      <div class="tag-filter" id="tagFilter" role="group" aria-label="Filter by tag" hidden></div>
       <div class="grid" id="grid"></div>
     </section>
 
@@ -54,11 +56,14 @@
       <p>
         <strong>An Instant In Eternity</strong> presents <em>The Well Of
         Pure Source, Axpure</em> as the centerpiece of this gallery.
-        Additional slideshow pieces are loaded from
+        Additional pieces are loaded from
         <code>images/manifest.json</code> -- add an image file under
         <code>images/</code> and one matching entry to that manifest to add
         a new piece to the gallery; there is no fixed limit on how many
-        entries it can hold. See the README for the exact format.
+        entries it can hold. The thumbnail grid below is a masonry layout
+        (like Pinterest) that keeps each image's natural proportions, and
+        pieces can be tagged for filtering as the collection grows. See the
+        README for the exact format.
       </p>
     </section>
   </main>

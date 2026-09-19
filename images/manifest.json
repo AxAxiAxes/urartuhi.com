@@ -1,206 +1,264 @@
 [
-    {
-        "file":  "gallery/gallery-01.jpg",
-        "title":  "Radiant Threshold",
-        "meta":  "Digital painting, upscaled study",
-        "alt":  "Abstract radiant light study artwork"
-    },
-    {
-        "file":  "gallery/gallery-02.jpg",
-        "title":  "Woven Light",
-        "meta":  "Digital painting, upscaled study",
-        "alt":  "Abstract woven light study artwork"
-    },
-    {
-        "file":  "gallery/gallery-03.jpg",
-        "title":  "Cyberpunk Vol. Two - Art Showcase Part 7",
-        "meta":  "Digital illustration, glitch/eye motif",
-        "alt":  "Cyberpunk styled poster with a stylized glowing eye"
-    },
-    {
-        "file":  "gallery/gallery-04.jpg",
-        "title":  "The Guardian in Gold",
-        "meta":  "Classical-style digital painting",
-        "alt":  "Painting of an armored goddess figure with a spear and shield in a classical hall"
-    },
-    {
-        "file":  "gallery/gallery-05.jpg",
-        "title":  "Aurora Vigil",
-        "meta":  "Digital painting",
-        "alt":  "A figure seated on a rock beneath a colorful aurora over a snowy lake"
-    },
-    {
-        "file":  "gallery/gallery-06.jpg",
-        "title":  "Hall of Gold",
-        "meta":  "Architectural digital painting",
-        "alt":  "Ornate golden palace hall with chandeliers and a lotus floor motif"
-    },
-    {
-        "file":  "gallery/gallery-07.jpg",
-        "title":  "Pomegranate and the Black Horse",
-        "meta":  "Digital painting",
-        "alt":  "A black horse in ornate tack surrounded by pomegranates and berries"
-    },
-    {
-        "file":  "gallery/gallery-08.jpg",
-        "title":  "Pomegranate and the Black Horse (study)",
-        "meta":  "Digital painting, alternate version",
-        "alt":  "Alternate crop of a black horse surrounded by pomegranates and berries"
-    },
-    {
-        "file":  "gallery/gallery-09.webp",
-        "title":  "Gallery Piece 09",
-        "meta":  "Uncaptioned upload - edit images/manifest.json to add a title",
-        "alt":  "Untitled gallery artwork"
-    },
-    {
-        "file":  "gallery/gallery-10.jpg",
-        "title":  "Gallery Piece 10",
-        "meta":  "Uncaptioned upload - edit images/manifest.json to add a title",
-        "alt":  "Untitled gallery artwork"
-    },
-    {
-        "file":  "gallery/gallery-11.webp",
-        "title":  "Gallery Piece 11",
-        "meta":  "Uncaptioned upload - edit images/manifest.json to add a title",
-        "alt":  "Untitled gallery artwork"
-    },
-    {
-        "file":  "gallery/gallery-12.jpg",
-        "title":  "Gallery Piece 12",
-        "meta":  "Uncaptioned upload - edit images/manifest.json to add a title",
-        "alt":  "Untitled gallery artwork"
-    },
-    {
-        "file":  "gallery/gallery-13.jpg",
-        "title":  "Gallery Piece 13",
-        "meta":  "Uncaptioned upload - edit images/manifest.json to add a title",
-        "alt":  "Untitled gallery artwork"
-    },
-    {
-        "file":  "gallery/gallery-14.jpg",
-        "title":  "Gallery Piece 14",
-        "meta":  "Uncaptioned upload - edit images/manifest.json to add a title",
-        "alt":  "Untitled gallery artwork"
-    },
-    {
-        "file":  "gallery/gallery-15.jpg",
-        "title":  "Gallery Piece 15",
-        "meta":  "Uncaptioned upload - edit images/manifest.json to add a title",
-        "alt":  "Untitled gallery artwork"
-    },
-    {
-        "file":  "gallery/gallery-16.jpg",
-        "title":  "Gallery Piece 16",
-        "meta":  "Uncaptioned upload - edit images/manifest.json to add a title",
-        "alt":  "Untitled gallery artwork"
-    },
-    {
-        "file":  "gallery/gallery-17.jpg",
-        "title":  "Gallery Piece 17",
-        "meta":  "Uncaptioned upload - edit images/manifest.json to add a title",
-        "alt":  "Untitled gallery artwork"
-    },
-    {
-        "file":  "gallery/gallery-18.jpg",
-        "title":  "Gallery Piece 18",
-        "meta":  "Uncaptioned upload - edit images/manifest.json to add a title",
-        "alt":  "Untitled gallery artwork"
-    },
-    {
-        "file":  "gallery/gallery-19.jpg",
-        "title":  "Gallery Piece 19",
-        "meta":  "Uncaptioned upload - edit images/manifest.json to add a title",
-        "alt":  "Untitled gallery artwork"
-    },
-    {
-        "file":  "gallery/gallery-20.jpg",
-        "title":  "Gallery Piece 20",
-        "meta":  "Uncaptioned upload - edit images/manifest.json to add a title",
-        "alt":  "Untitled gallery artwork"
-    },
-    {
-        "file":  "gallery/gallery-21.jpg",
-        "title":  "Gallery Piece 21",
-        "meta":  "Uncaptioned upload - edit images/manifest.json to add a title",
-        "alt":  "Untitled gallery artwork"
-    },
-    {
-        "file":  "gallery/gallery-22.jpg",
-        "title":  "Gallery Piece 22",
-        "meta":  "Uncaptioned upload - edit images/manifest.json to add a title",
-        "alt":  "Untitled gallery artwork"
-    },
-    {
-        "file":  "gallery/gallery-23.jpg",
-        "title":  "Gallery Piece 23",
-        "meta":  "Uncaptioned upload - edit images/manifest.json to add a title",
-        "alt":  "Untitled gallery artwork"
-    },
-    {
-        "file":  "gallery/gallery-24.jpg",
-        "title":  "Gallery Piece 24",
-        "meta":  "Uncaptioned upload - edit images/manifest.json to add a title",
-        "alt":  "Untitled gallery artwork"
-    },
-    {
-        "file":  "gallery/gallery-25.gif",
-        "title":  "Gallery Piece 25",
-        "meta":  "Uncaptioned upload - edit images/manifest.json to add a title",
-        "alt":  "Untitled gallery artwork"
-    },
-    {
-        "file":  "gallery/gallery-26.jpg",
-        "title":  "Gallery Piece 26",
-        "meta":  "Uncaptioned upload - edit images/manifest.json to add a title",
-        "alt":  "Untitled gallery artwork"
-    },
-    {
-        "file":  "gallery/gallery-27.jpg",
-        "title":  "Gallery Piece 27",
-        "meta":  "Uncaptioned upload - edit images/manifest.json to add a title",
-        "alt":  "Untitled gallery artwork"
-    },
-    {
-        "file":  "gallery/gallery-28.jpg",
-        "title":  "Gallery Piece 28",
-        "meta":  "Uncaptioned upload - edit images/manifest.json to add a title",
-        "alt":  "Untitled gallery artwork"
-    },
-    {
-        "file":  "gallery/gallery-29.webp",
-        "title":  "Gallery Piece 29",
-        "meta":  "Uncaptioned upload - edit images/manifest.json to add a title",
-        "alt":  "Untitled gallery artwork"
-    },
-    {
-        "file":  "gallery/gallery-30.webp",
-        "title":  "Gallery Piece 30",
-        "meta":  "Uncaptioned upload - edit images/manifest.json to add a title",
-        "alt":  "Untitled gallery artwork"
-    },
-    {
-        "file":  "gallery/gallery-31.jpg",
-        "title":  "Gallery Piece 31",
-        "meta":  "Uncaptioned upload - edit images/manifest.json to add a title",
-        "alt":  "Untitled gallery artwork"
-    },
-    {
-        "file":  "gallery/gallery-32.jpg",
-        "title":  "Gallery Piece 32",
-        "meta":  "Uncaptioned upload - edit images/manifest.json to add a title",
-        "alt":  "Untitled gallery artwork"
-    },
-    {
-        "file":  "gallery/gallery-33.jpg",
-        "title":  "Gallery Piece 33",
-        "meta":  "Uncaptioned upload - edit images/manifest.json to add a title",
-        "alt":  "Untitled gallery artwork"
-    },
-    {
-        "file":  "gallery/gallery-34.jpg",
-        "title":  "Gallery Piece 34",
-        "meta":  "Uncaptioned upload - edit images/manifest.json to add a title",
-        "alt":  "Untitled gallery artwork"
-    }
+  {
+    "file": "gallery/gallery-01.jpg",
+    "title": "Radiant Threshold",
+    "meta": "Digital painting, upscaled study",
+    "alt": "Abstract radiant light study artwork",
+    "tags": [
+      "abstract",
+      "light"
+    ]
+  },
+  {
+    "file": "gallery/gallery-02.jpg",
+    "title": "Woven Light",
+    "meta": "Digital painting, upscaled study",
+    "alt": "Abstract woven light study artwork",
+    "tags": [
+      "abstract",
+      "light"
+    ]
+  },
+  {
+    "file": "gallery/gallery-03.jpg",
+    "title": "Cyberpunk Vol. Two - Art Showcase Part 7",
+    "meta": "Digital illustration, glitch/eye motif",
+    "alt": "Cyberpunk styled poster with a stylized glowing eye",
+    "tags": [
+      "cyberpunk",
+      "digital"
+    ]
+  },
+  {
+    "file": "gallery/gallery-04.jpg",
+    "title": "The Guardian in Gold",
+    "meta": "Classical-style digital painting",
+    "alt": "Painting of an armored goddess figure with a spear and shield in a classical hall",
+    "tags": [
+      "classical",
+      "figure"
+    ]
+  },
+  {
+    "file": "gallery/gallery-05.jpg",
+    "title": "Aurora Vigil",
+    "meta": "Digital painting",
+    "alt": "A figure seated on a rock beneath a colorful aurora over a snowy lake",
+    "tags": [
+      "landscape",
+      "night"
+    ]
+  },
+  {
+    "file": "gallery/gallery-06.jpg",
+    "title": "Hall of Gold",
+    "meta": "Architectural digital painting",
+    "alt": "Ornate golden palace hall with chandeliers and a lotus floor motif",
+    "tags": [
+      "architecture",
+      "interior"
+    ]
+  },
+  {
+    "file": "gallery/gallery-07.jpg",
+    "title": "Pomegranate and the Black Horse",
+    "meta": "Digital painting",
+    "alt": "A black horse in ornate tack surrounded by pomegranates and berries",
+    "tags": [
+      "animal",
+      "still-life"
+    ]
+  },
+  {
+    "file": "gallery/gallery-08.jpg",
+    "title": "Pomegranate and the Black Horse (study)",
+    "meta": "Digital painting, alternate version",
+    "alt": "Alternate crop of a black horse surrounded by pomegranates and berries",
+    "tags": [
+      "animal",
+      "still-life"
+    ]
+  },
+  {
+    "file": "gallery/gallery-09.webp",
+    "title": "Gallery Piece 09",
+    "meta": "Uncaptioned upload - edit images/manifest.json to add a title",
+    "alt": "Untitled gallery artwork",
+    "tags": []
+  },
+  {
+    "file": "gallery/gallery-10.jpg",
+    "title": "Gallery Piece 10",
+    "meta": "Uncaptioned upload - edit images/manifest.json to add a title",
+    "alt": "Untitled gallery artwork",
+    "tags": []
+  },
+  {
+    "file": "gallery/gallery-11.webp",
+    "title": "Gallery Piece 11",
+    "meta": "Uncaptioned upload - edit images/manifest.json to add a title",
+    "alt": "Untitled gallery artwork",
+    "tags": []
+  },
+  {
+    "file": "gallery/gallery-12.jpg",
+    "title": "Gallery Piece 12",
+    "meta": "Uncaptioned upload - edit images/manifest.json to add a title",
+    "alt": "Untitled gallery artwork",
+    "tags": []
+  },
+  {
+    "file": "gallery/gallery-13.jpg",
+    "title": "Gallery Piece 13",
+    "meta": "Uncaptioned upload - edit images/manifest.json to add a title",
+    "alt": "Untitled gallery artwork",
+    "tags": []
+  },
+  {
+    "file": "gallery/gallery-14.jpg",
+    "title": "Gallery Piece 14",
+    "meta": "Uncaptioned upload - edit images/manifest.json to add a title",
+    "alt": "Untitled gallery artwork",
+    "tags": []
+  },
+  {
+    "file": "gallery/gallery-15.jpg",
+    "title": "Gallery Piece 15",
+    "meta": "Uncaptioned upload - edit images/manifest.json to add a title",
+    "alt": "Untitled gallery artwork",
+    "tags": []
+  },
+  {
+    "file": "gallery/gallery-16.jpg",
+    "title": "Gallery Piece 16",
+    "meta": "Uncaptioned upload - edit images/manifest.json to add a title",
+    "alt": "Untitled gallery artwork",
+    "tags": []
+  },
+  {
+    "file": "gallery/gallery-17.jpg",
+    "title": "Gallery Piece 17",
+    "meta": "Uncaptioned upload - edit images/manifest.json to add a title",
+    "alt": "Untitled gallery artwork",
+    "tags": []
+  },
+  {
+    "file": "gallery/gallery-18.jpg",
+    "title": "Gallery Piece 18",
+    "meta": "Uncaptioned upload - edit images/manifest.json to add a title",
+    "alt": "Untitled gallery artwork",
+    "tags": []
+  },
+  {
+    "file": "gallery/gallery-19.jpg",
+    "title": "Gallery Piece 19",
+    "meta": "Uncaptioned upload - edit images/manifest.json to add a title",
+    "alt": "Untitled gallery artwork",
+    "tags": []
+  },
+  {
+    "file": "gallery/gallery-20.jpg",
+    "title": "Gallery Piece 20",
+    "meta": "Uncaptioned upload - edit images/manifest.json to add a title",
+    "alt": "Untitled gallery artwork",
+    "tags": []
+  },
+  {
+    "file": "gallery/gallery-21.jpg",
+    "title": "Gallery Piece 21",
+    "meta": "Uncaptioned upload - edit images/manifest.json to add a title",
+    "alt": "Untitled gallery artwork",
+    "tags": []
+  },
+  {
+    "file": "gallery/gallery-22.jpg",
+    "title": "Gallery Piece 22",
+    "meta": "Uncaptioned upload - edit images/manifest.json to add a title",
+    "alt": "Untitled gallery artwork",
+    "tags": []
+  },
+  {
+    "file": "gallery/gallery-23.jpg",
+    "title": "Gallery Piece 23",
+    "meta": "Uncaptioned upload - edit images/manifest.json to add a title",
+    "alt": "Untitled gallery artwork",
+    "tags": []
+  },
+  {
+    "file": "gallery/gallery-24.jpg",
+    "title": "Gallery Piece 24",
+    "meta": "Uncaptioned upload - edit images/manifest.json to add a title",
+    "alt": "Untitled gallery artwork",
+    "tags": []
+  },
+  {
+    "file": "gallery/gallery-25.gif",
+    "title": "Gallery Piece 25",
+    "meta": "Uncaptioned upload - edit images/manifest.json to add a title",
+    "alt": "Untitled gallery artwork",
+    "tags": []
+  },
+  {
+    "file": "gallery/gallery-26.jpg",
+    "title": "Gallery Piece 26",
+    "meta": "Uncaptioned upload - edit images/manifest.json to add a title",
+    "alt": "Untitled gallery artwork",
+    "tags": []
+  },
+  {
+    "file": "gallery/gallery-27.jpg",
+    "title": "Gallery Piece 27",
+    "meta": "Uncaptioned upload - edit images/manifest.json to add a title",
+    "alt": "Untitled gallery artwork",
+    "tags": []
+  },
+  {
+    "file": "gallery/gallery-28.jpg",
+    "title": "Gallery Piece 28",
+    "meta": "Uncaptioned upload - edit images/manifest.json to add a title",
+    "alt": "Untitled gallery artwork",
+    "tags": []
+  },
+  {
+    "file": "gallery/gallery-29.webp",
+    "title": "Gallery Piece 29",
+    "meta": "Uncaptioned upload - edit images/manifest.json to add a title",
+    "alt": "Untitled gallery artwork",
+    "tags": []
+  },
+  {
+    "file": "gallery/gallery-30.webp",
+    "title": "Gallery Piece 30",
+    "meta": "Uncaptioned upload - edit images/manifest.json to add a title",
+    "alt": "Untitled gallery artwork",
+    "tags": []
+  },
+  {
+    "file": "gallery/gallery-31.jpg",
+    "title": "Gallery Piece 31",
+    "meta": "Uncaptioned upload - edit images/manifest.json to add a title",
+    "alt": "Untitled gallery artwork",
+    "tags": []
+  },
+  {
+    "file": "gallery/gallery-32.jpg",
+    "title": "Gallery Piece 32",
+    "meta": "Uncaptioned upload - edit images/manifest.json to add a title",
+    "alt": "Untitled gallery artwork",
+    "tags": []
+  },
+  {
+    "file": "gallery/gallery-33.jpg",
+    "title": "Gallery Piece 33",
+    "meta": "Uncaptioned upload - edit images/manifest.json to add a title",
+    "alt": "Untitled gallery artwork",
+    "tags": []
+  },
+  {
+    "file": "gallery/gallery-34.jpg",
+    "title": "Gallery Piece 34",
+    "meta": "Uncaptioned upload - edit images/manifest.json to add a title",
+    "alt": "Untitled gallery artwork",
+    "tags": []
+  }
 ]

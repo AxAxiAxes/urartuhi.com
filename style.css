@@ -230,6 +230,44 @@ figcaption .meta {
   background: var(--accent);
 }
 
+.slide-counter {
+  color: var(--muted);
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+}
+
+/* Tag filter */
+.tag-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0 0;
+}
+
+.tag-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 0.3rem 0.85rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.8rem;
+  letter-spacing: 0.03em;
+}
+
+.tag-btn:hover,
+.tag-btn:focus-visible {
+  border-color: var(--accent);
+  color: var(--ink);
+}
+
+.tag-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+
 /* Grid of all artwork */
 .gallery-grid {
   margin-top: 3rem;
@@ -244,14 +282,16 @@ figcaption .meta {
 }
 
 .grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 0.75rem;
+  columns: 4 200px;
+  column-gap: 0.75rem;
   margin-top: 1rem;
 }
 
 .thumb {
-  aspect-ratio: 1;
+  display: block;
+  width: 100%;
+  break-inside: avoid;
+  margin-bottom: 0.75rem;
   border-radius: 6px;
   border: 1px solid var(--border);
   cursor: pointer;
@@ -262,10 +302,9 @@ figcaption .meta {
 }
 
 .thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
   display: block;
+  width: 100%;
+  height: auto;
 }
 
 .thumb:hover,

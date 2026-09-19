@@ -3,7 +3,9 @@
 
   const slidesContainer = document.getElementById("slides");
   const dotsContainer = document.getElementById("dots");
+  const slideCounter = document.getElementById("slideCounter");
   const grid = document.getElementById("grid");
+  const tagFilter = document.getElementById("tagFilter");
   const prevBtn = document.getElementById("prevBtn");
   const nextBtn = document.getElementById("nextBtn");
   const playPauseBtn = document.getElementById("playPauseBtn");
@@ -13,6 +15,10 @@
 
   const AUTO_ADVANCE_MS = 5000;
   const MANIFEST_URL = "images/manifest.json";
+  // Above this many pieces, per-image nav dots stop being usable, so we
+  // switch to a plain "N / total" counter instead. Tag filtering and the
+  // masonry grid have no such limit -- they scale to any collection size.
+  const DOT_UI_LIMIT = 12;
 
   let slides = [];
   let current = 0;
@@ -65,6 +71,15 @@
   }
 
   function buildDots() {
+    if (slides.length > DOT_UI_LIMIT) {
+      // Too many pieces for one dot per slide to stay usable -- show a
+      // simple position counter instead (still fully navigable via the
+      // prev/next arrows, keyboard arrows, and grid thumbnails below).
+      dotsContainer.hidden = true;
+      slideCounter.hidden = false;
+      updateSlideCounter();
+      return;
+    }
     slides.forEach((_slide, index) => {
       const dot = document.createElement("button");
       dot.className = "dot" + (index === 0 ? " active" : "");
@@ -75,10 +90,59 @@
     });
   }
 
+  function updateSlideCounter() {
+    if (!slideCounter.hidden) {
+      slideCounter.textContent = `${current + 1} / ${slides.length}`;
+    }
+  }
+
+  function buildTagFilter(entries) {
+    const tagSet = new Set();
+    entries.forEach((entry) => {
+      (entry.tags || []).forEach((tag) => tagSet.add(String(tag)));
+    });
+    if (tagSet.size === 0) {
+      return;
+    }
+
+    tagFilter.hidden = false;
+
+    function makeButton(label, tag) {
+      const button = document.createElement("button");
+      button.className = "tag-btn" + (tag === null ? " active" : "");
+      button.textContent = label;
+      button.dataset.tag = tag === null ? "" : tag;
+      button.addEventListener("click", () => {
+        tagFilter
+          .querySelectorAll(".tag-btn")
+          .forEach((b) => b.classList.toggle("active", b === button));
+        applyTagFilter(tag);
+      });
+      tagFilter.appendChild(button);
+    }
+
+    makeButton("All", null);
+    Array.from(tagSet)
+      .sort((a, b) => a.localeCompare(b))
+      .forEach((tag) => makeButton(tag, tag));
+  }
+
+  function applyTagFilter(tag) {
+    const thumbs = grid.querySelectorAll(".thumb");
+    thumbs.forEach((thumb) => {
+      const matches = !tag || (thumb.dataset.tags || "").split("|").includes(tag);
+      thumb.hidden = !matches;
+    });
+  }
+
   function buildGrid(entries) {
+    // Masonry layout: each thumbnail keeps the image's natural aspect
+    // ratio (no forced square crop), so the grid scales visually the same
+    // way regardless of whether it holds a handful of pieces or hundreds.
     entries.forEach((entry, index) => {
       const thumb = document.createElement("button");
       thumb.className = "thumb";
+      thumb.dataset.tags = (entry.tags || []).join("|");
       thumb.setAttribute("aria-label", `View ${escapeHtml(entry.title || "artwork")} in slideshow`);
       const img = document.createElement("img");
       img.loading = "lazy";
@@ -92,12 +156,17 @@
 
   function goTo(index, userInitiated) {
     slides[current].classList.remove("active");
-    dotsContainer.children[current].classList.remove("active");
+    if (dotsContainer.children[current]) {
+      dotsContainer.children[current].classList.remove("active");
+    }
 
     current = (index + slides.length) % slides.length;
 
     slides[current].classList.add("active");
-    dotsContainer.children[current].classList.add("active");
+    if (dotsContainer.children[current]) {
+      dotsContainer.children[current].classList.add("active");
+    }
+    updateSlideCounter();
 
     if (userInitiated) {
       restartTimer();
@@ -154,6 +223,7 @@
     slides = Array.from(document.querySelectorAll(".slide"));
 
     buildDots();
+    buildTagFilter(entries);
     buildGrid(entries);
 
     prevBtn.addEventListener("click", prev);
