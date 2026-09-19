@@ -57,6 +57,18 @@
         ></textarea>
       </label>
 
+      <label class="field" for="voiceSelect">
+        <span>Voice</span>
+        <select id="voiceSelect">
+          <option value="nova">Nova -- warm, female (default)</option>
+          <option value="shimmer">Shimmer -- bright, female</option>
+          <option value="alloy">Alloy -- neutral</option>
+          <option value="echo">Echo -- male</option>
+          <option value="fable">Fable -- male, storyteller</option>
+          <option value="onyx">Onyx -- deep, male</option>
+        </select>
+      </label>
+
       <button type="button" class="generate-btn" id="startChatBtn">Start chat</button>
     </section>
 
@@ -65,6 +77,7 @@
         <div class="chat-avatar-frame gold-frame" id="chatAvatarFrame" hidden>
           <div class="gold-frame-inner">
             <img id="chatAvatarImg" alt="Companion avatar" />
+            <div class="mouth-flap" id="mouthFlap" hidden></div>
           </div>
         </div>
         <label class="voice-toggle">
@@ -94,7 +107,10 @@
     <p>&copy; <span id="year"></span> Urartuhi.</p>
   </footer>
 
-  <script>window.URARTUHI_COMPANION_BACKEND = "https://urartuhicom-production.up.railway.app/api/companion-chat";</script>
+  <script>
+    window.URARTUHI_COMPANION_BACKEND = "https://urartuhicom-production.up.railway.app/api/companion-chat";
+    window.URARTUHI_TTS_BACKEND = "https://urartuhicom-production.up.railway.app/api/tts";
+  </script>
   <script src="companion.js"></script>
 </body>
 </html>

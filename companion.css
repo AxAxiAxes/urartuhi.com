@@ -193,3 +193,25 @@
   color: var(--bg);
   border-color: var(--accent);
 }
+
+/* Simple "talking" mouth flap -- not real lip-sync (not feasible on a
+   static image), just a small animated bar near the mouth area that
+   flaps while audio is actively playing, so the avatar visibly "talks"
+   rather than just glowing. */
+.mouth-flap {
+  position: absolute;
+  left: 50%;
+  bottom: 22%;
+  width: 22%;
+  height: 6%;
+  min-height: 3px;
+  transform: translateX(-50%) scaleY(0.3);
+  background: rgba(20, 14, 6, 0.55);
+  border-radius: 999px;
+  transition: transform 0.09s ease;
+  pointer-events: none;
+}
+
+.mouth-flap.flap-open {
+  transform: translateX(-50%) scaleY(1);
+}

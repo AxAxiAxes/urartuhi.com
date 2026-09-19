@@ -42,12 +42,14 @@
   const clearReferenceBtn = document.getElementById("clearReference");
   const promptField = document.getElementById("prompt");
   const stylePresetField = document.getElementById("stylePreset");
+  const realisticToggle = document.getElementById("realisticToggle");
   const generateBtn = document.getElementById("generateBtn");
   const statusEl = document.getElementById("avatarStatus");
   const previewImg = document.getElementById("avatarPreviewImg");
   const placeholderEl = document.getElementById("goldFramePlaceholder");
   const saveBtn = document.getElementById("saveBtn");
   const downloadBtn = document.getElementById("downloadBtn");
+  const chatWithAvatarBtn = document.getElementById("chatWithAvatarBtn");
   const recentGrid = document.getElementById("recentGrid");
   const recentEmptyNote = document.getElementById("recentEmptyNote");
   const yearSpan = document.getElementById("year");
@@ -133,10 +135,15 @@
       : `data:image/png;base64,${data.image}`;
   }
 
-  function buildFullPrompt(rawPrompt, styleKey) {
+  function buildFullPrompt(rawPrompt, styleKey, realistic) {
     const preset = STYLE_PRESETS[styleKey];
     const suffix = preset ? preset.promptSuffix : "";
-    return suffix ? `${rawPrompt.trim()} -- ${suffix}` : rawPrompt.trim();
+    const realismSuffix = realistic
+      ? "photorealistic portrait, natural skin texture, realistic lighting " +
+        "and depth of field, shot like a real photograph (not a painting or " +
+        "illustration)."
+      : "";
+    return [rawPrompt.trim(), suffix, realismSuffix].filter(Boolean).join(" -- ");
   }
 
   form.addEventListener("submit", async (event) => {
@@ -150,11 +157,12 @@
     }
 
     const styleKey = stylePresetField.value;
-    const fullPrompt = buildFullPrompt(rawPrompt, styleKey);
+    const fullPrompt = buildFullPrompt(rawPrompt, styleKey, realisticToggle.checked);
 
     generateBtn.disabled = true;
     saveBtn.disabled = true;
     downloadBtn.disabled = true;
+    chatWithAvatarBtn.disabled = true;
     setStatus("Generating your avatar...");
 
     try {
@@ -172,6 +180,7 @@
 
       saveBtn.disabled = false;
       downloadBtn.disabled = false;
+      chatWithAvatarBtn.disabled = false;
       setStatus("Avatar generated.", "success");
     } catch (error) {
       setStatus(
@@ -246,11 +255,20 @@
     if (!currentAvatarDataUrl) {
       return;
     }
+    saveCurrentAvatar();
+    setStatus("Saved to your recent avatars below.", "success");
+  });
+
+  // Reused by both the explicit Save button and "Chat with this avatar"
+  // (which auto-saves first, since the companion page picks its avatar
+  // from this same saved-avatars list). Returns the saved entry's id.
+  function saveCurrentAvatar() {
     const entries = loadRecentAvatars();
     const styleKey = stylePresetField.value;
     const preset = STYLE_PRESETS[styleKey];
+    const id = `avatar-${Date.now()}`;
     entries.unshift({
-      id: `avatar-${Date.now()}`,
+      id,
       dataUrl: currentAvatarDataUrl,
       title: promptField.value.trim().slice(0, 80) || "Untitled avatar",
       meta: preset ? preset.label : "",
@@ -260,7 +278,15 @@
     });
     saveRecentAvatars(entries.slice(0, RECENT_LIMIT));
     renderRecentGrid();
-    setStatus("Saved to your recent avatars below.", "success");
+    return id;
+  }
+
+  chatWithAvatarBtn.addEventListener("click", () => {
+    if (!currentAvatarDataUrl) {
+      return;
+    }
+    const id = saveCurrentAvatar();
+    window.location.href = `companion.html?avatar=${encodeURIComponent(id)}`;
   });
 
   downloadBtn.addEventListener("click", () => {
