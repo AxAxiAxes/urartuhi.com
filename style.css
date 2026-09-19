@@ -42,6 +42,22 @@ body {
   letter-spacing: 0.05em;
 }
 
+.avatar-nav {
+  margin-top: 1rem;
+}
+
+.avatar-nav a {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+}
+
+.avatar-nav a:hover,
+.avatar-nav a:focus-visible {
+  text-decoration: underline;
+}
+
 main {
   max-width: 960px;
   margin: 0 auto;
