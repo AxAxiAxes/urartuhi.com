@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Avatar Generator | Urartuhi</title>
+  <meta name="description" content="Generate a personal Urartuhi-styled avatar -- Axpure water-light glow, gold ornamental frame, cosmic gradient, and eternal instant presets." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="avatar.css" />
+</head>
+<body>
+  <header class="site-header">
+    <h1 class="wordmark">Avatar Generator</h1>
+    <p class="tagline">Urartuhi &middot; Create your own instant in eternity</p>
+    <nav class="avatar-nav">
+      <a href="index.html">&larr; Back to the gallery</a>
+      &middot;
+      <a href="companion.html">Companion chat &rarr;</a>
+    </nav>
+  </header>
+
+  <main class="avatar-main">
+    <section class="avatar-studio" aria-label="Avatar generator">
+      <form class="avatar-form" id="avatarForm">
+        <h2>Create</h2>
+
+        <label class="field" for="referenceImage">
+          <span>Reference image (optional)</span>
+          <input type="file" id="referenceImage" accept="image/*" />
+        </label>
+        <div class="reference-preview" id="referencePreview" hidden>
+          <img id="referencePreviewImg" alt="Reference upload preview" />
+          <button type="button" id="clearReference" class="link-btn">Remove</button>
+        </div>
+
+        <label class="field" for="prompt">
+          <span>Prompt</span>
+          <textarea
+            id="prompt"
+            rows="4"
+            placeholder="e.g. a luminous portrait of a wanderer beneath a starlit gold-veined sky"
+            required
+          ></textarea>
+        </label>
+
+        <label class="field" for="stylePreset">
+          <span>Style preset</span>
+          <select id="stylePreset">
+            <option value="axpure-water-light">Axpure Water-Light</option>
+            <option value="gold-ornamental-frame">Gold Ornamental Frame</option>
+            <option value="cosmic-gradient">Cosmic Gradient</option>
+            <option value="eternal-instant">Eternal Instant</option>
+          </select>
+        </label>
+
+        <button type="submit" class="generate-btn" id="generateBtn">Generate</button>
+
+        <p class="avatar-status" id="avatarStatus" role="status" aria-live="polite"></p>
+      </form>
+
+      <div class="avatar-preview-panel">
+        <h2>Preview</h2>
+        <div class="gold-frame" id="goldFrame">
+          <div class="gold-frame-inner">
+            <img id="avatarPreviewImg" alt="" hidden />
+            <p class="gold-frame-placeholder" id="goldFramePlaceholder">
+              Your generated avatar will appear here.
+            </p>
+          </div>
+        </div>
+        <div class="preview-actions">
+          <button type="button" class="save-btn" id="saveBtn" disabled>Save to Gallery</button>
+          <button type="button" class="download-btn" id="downloadBtn" disabled>Download</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="gallery-grid recent-avatars" aria-label="Recently generated avatars">
+      <h2>Recently generated</h2>
+      <p class="recent-note">
+        Saved avatars are kept in this browser only. To add one to the
+        permanent gallery on urartuhi.com, see the README for the manual
+        <code>images/avatars/</code> + <code>images/manifest.json</code>
+        step.
+      </p>
+      <div class="grid" id="recentGrid"></div>
+      <p class="gallery-empty-note" id="recentEmptyNote">
+        No avatars saved yet -- generate one above and click "Save to
+        Gallery" to keep it here.
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; <span id="year"></span> Urartuhi.</p>
+  </footer>
+
+  <script>window.URARTUHI_AVATAR_BACKEND = "https://urartuhicom-production.up.railway.app/api/generate-avatar";</script>
+  <script src="avatar.js"></script>
+</body>
+</html>

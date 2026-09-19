@@ -94,6 +94,57 @@ You can also run it manually via the Actions tab ("Auto-caption gallery
 uploads" -> Run workflow), or locally with `OPENAI_API_KEY=... node
 scripts/auto-caption.js`.
 
+## Companion Chat (`/companion`, `companion.html`)
+
+A small, **family-friendly-only** text companion page: pick a saved avatar
+(from the generator above) or go faceless, name your companion and give it
+a short personality description, then chat with it.
+
+- `companion.html` / `companion.css` / `companion.js` -- page markup,
+  styling, and client logic; reuses the `.gold-frame` treatment from the
+  avatar page and the same `localStorage` list of saved avatars.
+- **Backend:** `POST /api/companion-chat` in
+  `services/urartuhi-docent/index.js`, reusing the same `OPENAI_API_KEY`
+  secret as `/api/narrate` and `/api/generate-avatar`. The system prompt
+  explicitly instructs the model to keep every reply PG/family-safe and to
+  decline and redirect any romantic, explicit, or adult roleplay request,
+  even if asked to ignore that instruction. This is intentionally **not**
+  an adult/romantic companion and is not designed to be reconfigured into
+  one.
+- Conversation history is kept in memory only (cleared on page reload /
+  "End chat"); nothing is persisted to the gallery or manifest.
+
+## Avatar Generator (`/avatar`, `avatar.html`)
+
+A small, self-contained page for generating a personal Urartuhi-styled
+avatar: optional reference image upload, prompt, a style preset selector
+(Axpure Water-Light, Gold Ornamental Frame, Cosmic Gradient, Eternal
+Instant), a preview inside a gold-frame treatment, and Save/Download
+buttons. "Recently generated" avatars are shown below in the same masonry
+grid component used by the main gallery.
+
+- `avatar.html` / `avatar.css` / `avatar.js` -- page markup, styling, and
+  client logic. No build step, same plain HTML/CSS/JS approach as the rest
+  of the site.
+- **Generation backend:** `avatar.js`'s `generateAvatar()` function is
+  pluggable -- it POSTs to `window.URARTUHI_AVATAR_BACKEND` (set in
+  `avatar.html`, pointed at the existing Railway service). The corresponding
+  route, `POST /api/generate-avatar` in `services/urartuhi-docent/index.js`,
+  wraps **OpenAI's Images API (`gpt-image-1`)** and reuses the same
+  `OPENAI_API_KEY` secret already required for `/api/narrate`. No key is
+  hardcoded in this repo. If the key is missing (or the route hasn't been
+  deployed yet), the page shows a friendly inline error instead of crashing.
+  Swap the provider by editing `generateAvatar()` and/or the backend route.
+- **"Save to Gallery" is browser-local only.** This is a static site with
+  no server-side write access from the browser, so saved avatars are kept
+  in `localStorage` (per browser) and rendered in the "Recently generated"
+  grid -- they are **not** automatically added to `images/manifest.json` or
+  the public gallery. To promote a saved avatar to the permanent gallery on
+  urartuhi.com, download it and follow the same manual steps as any other
+  upload: add the file under a new `images/avatars/` folder and add one
+  matching entry to `images/manifest.json` (see "Adding artwork" above for
+  the exact schema).
+
 ## Scaling to a large collection
 
 This site is designed to scale the same way image-heavy sites like
