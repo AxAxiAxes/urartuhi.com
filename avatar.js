@@ -30,6 +30,12 @@
         "captured as a single luminous eternal instant, timeless, painterly, " +
         "reverent stillness, soft glow at the edges.",
     },
+    "ethereal": {
+      label: "Ethereal",
+      promptSuffix:
+        "dreamlike and weightless, translucent soft-focus glow, gentle " +
+        "diffused light, delicate misty atmosphere, otherworldly calm.",
+    },
   };
 
   const RECENT_STORAGE_KEY = "urartuhiRecentAvatars";
