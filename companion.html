@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Companion Chat | Urartuhi</title>
+  <meta name="description" content="Chat with a companion persona built around one of your Urartuhi avatars -- friendly, family-safe conversation only." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="avatar.css" />
+  <link rel="stylesheet" href="companion.css" />
+</head>
+<body>
+  <header class="site-header">
+    <h1 class="wordmark">Companion Chat</h1>
+    <p class="tagline">Urartuhi &middot; A friendly conversation with your avatar</p>
+    <nav class="avatar-nav">
+      <a href="index.html">&larr; Gallery</a>
+      &middot;
+      <a href="avatar.html">Avatar Generator</a>
+    </nav>
+  </header>
+
+  <main class="companion-main">
+    <p class="companion-safety-note">
+      This is a family-friendly text companion. It will not engage in
+      romantic, explicit, or adult roleplay, and will steer conversation
+      back to friendly, safe topics if asked.
+    </p>
+
+    <section class="companion-setup" aria-label="Choose your companion">
+      <h2>Your companion</h2>
+      <div class="companion-picker">
+        <label class="field" for="avatarPicker">
+          <span>Pick a saved avatar (optional)</span>
+          <select id="avatarPicker">
+            <option value="">No avatar / plain persona</option>
+          </select>
+        </label>
+        <div class="companion-avatar-preview gold-frame" id="companionAvatarFrame" hidden>
+          <div class="gold-frame-inner">
+            <img id="companionAvatarImg" alt="Selected companion avatar" />
+          </div>
+        </div>
+      </div>
+
+      <label class="field" for="personaName">
+        <span>Companion name</span>
+        <input type="text" id="personaName" placeholder="e.g. Sela" maxlength="40" />
+      </label>
+
+      <label class="field" for="personaDescription">
+        <span>Personality / description</span>
+        <textarea
+          id="personaDescription"
+          rows="3"
+          placeholder="e.g. warm, curious, speaks a little like an old friend, loves talking about art and stargazing"
+        ></textarea>
+      </label>
+
+      <button type="button" class="generate-btn" id="startChatBtn">Start chat</button>
+    </section>
+
+    <section class="companion-chat-panel" id="chatPanel" hidden aria-label="Conversation">
+      <div class="chat-window" id="chatWindow" role="log" aria-live="polite"></div>
+      <form class="chat-input-row" id="chatForm">
+        <label class="sr-only" for="chatMessage">Message</label>
+        <input
+          type="text"
+          id="chatMessage"
+          placeholder="Say something..."
+          autocomplete="off"
+          required
+        />
+        <button type="submit" class="generate-btn" id="sendBtn">Send</button>
+      </form>
+      <p class="chat-status" id="chatStatus" role="status" aria-live="polite"></p>
+      <button type="button" class="link-btn" id="endChatBtn">End chat &amp; start over</button>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; <span id="year"></span> Urartuhi.</p>
+  </footer>
+
+  <script>window.URARTUHI_COMPANION_BACKEND = "https://urartuhicom-production.up.railway.app/api/companion-chat";</script>
+  <script src="companion.js"></script>
+</body>
+</html>

@@ -94,6 +94,26 @@ You can also run it manually via the Actions tab ("Auto-caption gallery
 uploads" -> Run workflow), or locally with `OPENAI_API_KEY=... node
 scripts/auto-caption.js`.
 
+## Companion Chat (`/companion`, `companion.html`)
+
+A small, **family-friendly-only** text companion page: pick a saved avatar
+(from the generator above) or go faceless, name your companion and give it
+a short personality description, then chat with it.
+
+- `companion.html` / `companion.css` / `companion.js` -- page markup,
+  styling, and client logic; reuses the `.gold-frame` treatment from the
+  avatar page and the same `localStorage` list of saved avatars.
+- **Backend:** `POST /api/companion-chat` in
+  `services/urartuhi-docent/index.js`, reusing the same `OPENAI_API_KEY`
+  secret as `/api/narrate` and `/api/generate-avatar`. The system prompt
+  explicitly instructs the model to keep every reply PG/family-safe and to
+  decline and redirect any romantic, explicit, or adult roleplay request,
+  even if asked to ignore that instruction. This is intentionally **not**
+  an adult/romantic companion and is not designed to be reconfigured into
+  one.
+- Conversation history is kept in memory only (cleared on page reload /
+  "End chat"); nothing is persisted to the gallery or manifest.
+
 ## Avatar Generator (`/avatar`, `avatar.html`)
 
 A small, self-contained page for generating a personal Urartuhi-styled
