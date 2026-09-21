@@ -8,6 +8,34 @@ wrong, the root cause, who's accountable, and how/whether it was fixed.
 
 ---
 
+## 2026-09-21 — Built the whole Live Avatar feature before confirming the external account existed
+
+**What happened:** Built the full `/live-avatar` UI and backend (`/api/start-live-avatar`)
+wrapping Tavus end-to-end, then only afterward told the user they'd need a
+Tavus account, API key, and a PAL/face created in Tavus's dashboard before
+any of it would work. The "you need to set this up" step should have come
+*before* the build, not after — the user correctly called this out:
+"redirect comes first."
+
+**Root cause:** Treated "the user confirmed the direction (Tavus)" as
+equivalent to "the user has or wants the external account," without
+explicitly checking the second thing before investing build effort. Same
+class of mistake as the "Ethereal" miss (#2026-09-19 below): building
+before confirming the real prerequisite, not just the feature direction.
+
+**Impact:** No wasted money this time (no paid API calls made), but real
+wasted build effort if the user doesn't end up creating a Tavus account —
+the entire feature would sit unused.
+
+**Fix going forward:** Before building any feature that depends on a
+third-party account/credential the user must create themselves, ask
+first whether they already have (or are willing to create) that account
+— don't build the integration and find out afterward.
+
+**Accountable:** Me.
+
+---
+
 ## 2026-09-19 — Pasted a tool-display artifact into real backend code
 
 **What happened:** While writing the new `/api/start-live-avatar` route in
