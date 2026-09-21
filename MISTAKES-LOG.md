@@ -8,6 +8,30 @@ wrong, the root cause, who's accountable, and how/whether it was fixed.
 
 ---
 
+## 2026-09-19 — Pasted a tool-display artifact into real backend code
+
+**What happened:** While writing the new `/api/start-live-avatar` route in
+`services/urartuhi-docent/index.js`, I copied the existing `Authorization`
+header line as a template and accidentally included the literal masked
+text (`` `****** ``) that my own file-viewer shows for secret-looking
+header lines, instead of the real `apiKey` variable. This would have been
+a syntax error / broken request had it shipped.
+
+**Root cause:** Careless copy-paste from a rendered view of the file
+without re-reading the line I pasted, so a cosmetic display artifact (not
+real file content) ended up in new code.
+
+**Caught by:** Running `node --check` immediately after the edit, before
+any commit or deploy, as required by the "check before running" standard
+I committed to. Fixed in the same turn; confirmed `node --check` passes
+after the fix.
+
+**Accountable:** Me. No user time or money was spent on this one — caught
+before it left my own editing step — but it's logged because it's exactly
+the kind of unverified change this log exists to prevent.
+
+---
+
 ## 2026-09-19 — Built the wrong category of "interactive avatar"
 
 **What happened:** Asked to build an interactive, animated, voice-driven

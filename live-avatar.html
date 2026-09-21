@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Live Avatar | Urartuhi</title>
+  <meta name="description" content="Talk face-to-face with a real animated Urartuhi avatar -- describe a character in your own words and start a live voice conversation." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="avatar.css" />
+  <link rel="stylesheet" href="live-avatar.css" />
+</head>
+<body>
+  <header class="site-header">
+    <h1 class="wordmark">Live Avatar</h1>
+    <p class="tagline">Urartuhi &middot; A real animated character, in conversation with you</p>
+    <nav class="avatar-nav">
+      <a href="index.html">&larr; Gallery</a>
+      &middot;
+      <a href="avatar.html">Avatar image generator</a>
+      &middot;
+      <a href="companion.html">Text companion chat</a>
+    </nav>
+  </header>
+
+  <main class="avatar-main">
+    <section class="avatar-studio live-avatar-studio" aria-label="Live avatar conversation">
+      <form class="avatar-form" id="liveAvatarForm">
+        <h2>Describe your character</h2>
+        <p class="live-avatar-intro">
+          No style presets here -- just describe who they are (appearance,
+          personality, voice) in your own words. This starts a real,
+          animated, spoken conversation, not an image.
+        </p>
+
+        <label class="field" for="characterPrompt">
+          <span>Character description</span>
+          <textarea
+            id="characterPrompt"
+            rows="6"
+            placeholder="e.g. a warm, curious woman in her late 20s with a soft voice, calm and thoughtful, who speaks slowly and asks good questions"
+            required
+          ></textarea>
+        </label>
+
+        <button type="submit" class="generate-btn" id="startLiveBtn">Start live conversation</button>
+        <button type="button" class="download-btn" id="endLiveBtn" hidden>End conversation</button>
+
+        <p class="avatar-status" id="liveAvatarStatus" role="status" aria-live="polite"></p>
+      </form>
+
+      <div class="avatar-preview-panel">
+        <h2>Live avatar</h2>
+        <div class="gold-frame" id="liveGoldFrame">
+          <div class="gold-frame-inner">
+            <iframe
+              id="liveAvatarFrame"
+              hidden
+              allow="camera; microphone; autoplay; fullscreen; display-capture"
+              title="Live avatar conversation"
+            ></iframe>
+            <p class="gold-frame-placeholder" id="liveGoldFramePlaceholder">
+              Your live avatar will appear here once a conversation starts.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; <span id="year"></span> Urartuhi.</p>
+  </footer>
+
+  <script>window.URARTUHI_LIVE_AVATAR_BACKEND = "https://urartuhicom-production.up.railway.app/api/start-live-avatar";</script>
+  <script src="live-avatar.js"></script>
+</body>
+</html>
