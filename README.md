@@ -130,6 +130,39 @@ a short personality description, then chat with it.
   straight into a chat -- so generating and interacting feel like one
   flow instead of two disconnected tools.
 
+## Live Avatar (`/live-avatar`, `live-avatar.html`)
+
+The actual "real animated, talking avatar" feature: a single free-text
+"Describe your character" box (no style presets, no image generation
+step) that starts a **real-time, spoken, face-to-face video conversation**
+with a live animated character -- a fundamentally different technology
+from `/avatar`'s static image generator.
+
+- `live-avatar.html` / `live-avatar.css` / `live-avatar.js` -- page
+  markup, styling (reuses the `.gold-frame` treatment from `avatar.css`),
+  and client logic. On submit, it POSTs the character description to a
+  pluggable `startLiveAvatar()` function and embeds the returned
+  conversation URL in an `<iframe>` (camera/microphone permission
+  requested by the provider's own embedded page).
+- **Backend:** `POST /api/start-live-avatar` in
+  `services/urartuhi-docent/index.js`, wrapping **Tavus's Conversational
+  Video Interface** (`POST https://tavusapi.com/v2/conversations`).
+  Requires two Railway env vars that are **not yet configured** anywhere
+  in this repo:
+  - `TAVUS_API_KEY` -- from https://platform.tavus.io.
+  - `TAVUS_PAL_ID` (preferred) or `TAVUS_FACE_ID` -- a face/persona bundle
+    you create once in the Tavus dashboard. Tavus needs an existing face
+    to animate; it cannot generate one from a text prompt alone, so this
+    step can't be automated by the agent and must be done by you.
+  Until both are set, the route returns a clear "not configured" error
+  instead of a broken iframe or a fabricated response.
+- No credentials for this provider exist in this environment yet, so this
+  feature has **not** been tested end-to-end against a live Tavus call --
+  only the UI, the error path (missing-key case), and JS/element wiring
+  have been verified. Once `TAVUS_API_KEY` + `TAVUS_PAL_ID`/`TAVUS_FACE_ID`
+  are set on the `urartuhi.com` Railway service, a live smoke test is
+  still needed.
+
 ## Avatar Generator (`/avatar`, `avatar.html`)
 
 A small, self-contained page for generating a personal Urartuhi-styled

@@ -122,5 +122,73 @@ app.post('/api/tts', async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+// Backs the /live-avatar page: starts a real-time, animated, voice
+// conversation via Tavus's Conversational Video Interface (CVI). This is
+// a fundamentally different product than /api/generate-avatar (a static
+// image) -- it returns a live WebRTC video-call URL for an actual talking
+// character, driven by a free-text character description instead of a
+// style preset.
+//
+// Requires TWO env vars on Railway that are NOT yet configured anywhere
+// in this repo (no credentials are hardcoded here):
+//   TAVUS_API_KEY  -- from https://platform.tavus.io (account API key)
+//   TAVUS_PAL_ID   -- a "PAL" (persona + face + voice bundle) created in
+//                     the Tavus dashboard first; Tavus requires an
+//                     existing face/PAL, it cannot generate one from a
+//                     text prompt alone. Set TAVUS_FACE_ID instead if you
+//                     have a bare face without a PAL.
+// Until both are set, this route returns a clear "not configured" error
+// instead of silently failing or faking a response.
+app.post('/api/start-live-avatar', async (req, res) => {
+  const { characterPrompt } = req.body;
+  const apiKey = process.env.TAVUS_API_KEY;
+  const palId = process.env.TAVUS_PAL_ID;
+  const faceId = process.env.TAVUS_FACE_ID;
+
+  if (!apiKey) {
+    return res.status(500).json({
+      error: 'TAVUS_API_KEY missing on Railway. Sign up at https://platform.tavus.io, ' +
+        'create an API key, and set TAVUS_API_KEY (plus TAVUS_PAL_ID or TAVUS_FACE_ID) ' +
+        'as Railway environment variables to enable the live avatar. See README.',
+    });
+  }
+  if (!palId && !faceId) {
+    return res.status(500).json({
+      error: 'TAVUS_PAL_ID (or TAVUS_FACE_ID) missing on Railway. Create a PAL/face in ' +
+        'the Tavus dashboard first -- Tavus needs an existing face to animate, it cannot ' +
+        'be generated from a text prompt alone. See README.',
+    });
+  }
+  if (!characterPrompt) {
+    return res.status(400).json({ error: 'characterPrompt is required' });
+  }
+
+  try {
+    const body = {
+      conversation_name: 'Urartuhi Live Avatar',
+      conversational_context: characterPrompt,
+    };
+    if (palId) body.pal_id = palId;
+    if (faceId) body.face_id = faceId;
+
+    const tavusRes = await fetch('https://tavusapi.com/v2/conversations', {
+      method: 'POST',
+      headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (!tavusRes.ok) {
+      const err = await tavusRes.text();
+      return res.status(tavusRes.status).json({ error: err });
+    }
+    const data = await tavusRes.json();
+    if (!data || !data.conversation_url) {
+      return res.status(502).json({ error: 'No conversation_url returned from Tavus' });
+    }
+    res.json({ conversationUrl: data.conversation_url });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 const port = process.env.PORT || 3001;
 app.listen(port, () => console.log(`Urartuhi docent live on ${port}`));
