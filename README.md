@@ -166,36 +166,74 @@ a short personality description, then chat with it.
 
 ## Live Avatar (`/live-avatar`, `live-avatar.html`)
 
-The actual "real animated, talking avatar" feature: a single free-text
-"Describe your character" box (no style presets, no image generation
-step) that starts a **real-time, spoken, face-to-face video conversation**
-with a live animated character -- a fundamentally different technology
-from `/avatar`'s static image generator.
+Uses your **existing Tavus account, PAL and face** for a real-time video
+conversation. This is distinct from the static image generator and from
+the separate historical Eternal AI project. The description supplies
+conversation context; it does not generate a new face or change your
+account's voice/PAL configuration.
 
-- `live-avatar.html` / `live-avatar.css` / `live-avatar.js` -- page
-  markup, styling (reuses the `.gold-frame` treatment from `avatar.css`),
-  and client logic. On submit, it POSTs the character description to a
-  pluggable `startLiveAvatar()` function and embeds the returned
-  conversation URL in an `<iframe>` (camera/microphone permission
-  requested by the provider's own embedded page).
-- **Backend:** `POST /api/start-live-avatar` in
-  `services/urartuhi-docent/index.js`, wrapping **Tavus's Conversational
-  Video Interface** (`POST https://tavusapi.com/v2/conversations`).
-  Requires two Railway env vars that are **not yet configured** anywhere
-  in this repo:
-  - `TAVUS_API_KEY` -- from https://platform.tavus.io.
-  - `TAVUS_PAL_ID` (preferred) or `TAVUS_FACE_ID` -- a face/persona bundle
-    you create once in the Tavus dashboard. Tavus needs an existing face
-    to animate; it cannot generate one from a text prompt alone, so this
-    step can't be automated by the agent and must be done by you.
-  Until both are set, the route returns a clear "not configured" error
-  instead of a broken iframe or a fabricated response.
-- No credentials for this provider exist in this environment yet, so this
-  feature has **not** been tested end-to-end against a live Tavus call --
-  only the UI, the error path (missing-key case), and JS/element wiring
-  have been verified. Once `TAVUS_API_KEY` + `TAVUS_PAL_ID`/`TAVUS_FACE_ID`
-  are set on the `urartuhi.com` Railway service, a live smoke test is
-  still needed.
+**Owner setup (no new account or purchase required by this code):**
+
+1. In your existing Tavus dashboard, locate the API key and existing PAL
+   with a valid default face, or the existing face ID. Do not paste API
+   keys into chat, the HTML, the browser access-code field, or the repo.
+2. Open the Railway service that serves
+   `https://urartuhicom-production.up.railway.app` (historically named
+   `urartuhi.com`). In **Variables**, privately set `TAVUS_API_KEY` and
+   `TAVUS_PAL_ID`, or `TAVUS_FACE_ID` if using a face without a PAL.
+   If both IDs are supplied, the face overrides the PAL's default face.
+   These names match the current official contract checked 2026-10-17:
+   [Create conversation](https://docs.tavus.io/api-reference/conversations/create-conversation).
+   Do not relabel legacy persona/replica IDs without confirming them in
+   your current account; this implementation sends `pal_id`/`face_id`.
+3. Also set `TAVUS_ACCESS_CODE` to a new private random owner code of at
+   least 16 characters. This is **not** your Tavus API key. It prevents
+   anonymous public visitors from creating chargeable calls. Share it
+   only with intended users, not in chat/repo/logs. Configure through the
+   Railway dashboard; no Railway account access is available in this task.
+4. Deploy this branch's backend changes (`services/urartuhi-docent`,
+   `npm start`) and publish the updated static page. The current live
+   backend's new readiness endpoint returned HTTP 404 before deployment;
+   the local static preview cannot deploy it or configure its variables.
+5. Open `live-avatar.html` (local preview:
+   `http://127.0.0.1:8768/live-avatar.html`) and **Check setup again**.
+   `GET /api/live-avatar-status` checks server variable presence only:
+   it never contacts Tavus, exposes key/ID values, validates a license,
+   verifies credits, or starts a call. Ready means configured, not
+   authenticated end-to-end.
+6. When you choose to use your plan credits, enter the private owner code,
+   context, and media/cost consent, then Start. Only this explicit action
+   creates a Tavus session. The embedded provider UI asks for media
+   permissions. Selected slideshow images are not connected or sent.
+
+**Lifecycle and cost controls:** `services/urartuhi-docent/tavus.js`
+registers readiness, start, and end routes. API keys stay server-side;
+provider errors are sanitized. Start requires an approved origin and
+private owner code; calls use private meeting tokens, two participants
+maximum, a five-minute provider duration cap, 60-second absent and
+30-second participant-left timeouts, with recording disabled. Only one
+call/start is allowed per server process; an uncertain creation holds a
+six-minute retry lock to avoid accidental duplicates. This is a
+single-instance owner setup, not multi-user billing or distributed rate
+limiting. A server restart loses its cleanup capability/lock; provider
+timeouts still apply. Do not scale replicas without shared session state.
+Your existing Tavus subscription/license controls actual charges/credits;
+these safeguards are not a guarantee that usage is free.
+
+**End conversation** removes the iframe and calls
+`POST /api/end-live-avatar`, which uses the returned session-scoped cleanup
+token to call Tavus's non-destructive
+[End Conversation](https://docs.tavus.io/api-reference/conversations/end-conversation)
+endpoint. It does not delete conversation records. Failed End is visible
+and retryable, with Start blocked; use your Tavus dashboard if necessary.
+Navigation cleanup is best-effort, with provider timeouts as backstop.
+Room creation is not presented as a connected video call.
+
+**Verification:** `cd services/urartuhi-docent`, then `npm test` (Node 22+).
+Tests mock Tavus; no real provider calls, account changes, purchases, or
+paid sessions are made by tests/setup checks. Live account/license/key
+validity and real camera/microphone conversation still require the owner
+to configure Railway and explicitly start an authorized session.
 
 ## Avatar Generator (`/avatar`, `avatar.html`)
 

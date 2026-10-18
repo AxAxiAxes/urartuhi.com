@@ -1,98 +1,152 @@
 (function () {
   "use strict";
-
   const form = document.getElementById("liveAvatarForm");
-  const characterPromptField = document.getElementById("characterPrompt");
+  const prompt = document.getElementById("characterPrompt");
+  const accessCode = document.getElementById("liveAccessCode");
+  const consent = document.getElementById("liveConsent");
   const startBtn = document.getElementById("startLiveBtn");
   const endBtn = document.getElementById("endLiveBtn");
-  const statusEl = document.getElementById("liveAvatarStatus");
+  const checkBtn = document.getElementById("checkLiveSetup");
+  const setupStatus = document.getElementById("liveSetupStatus");
+  const status = document.getElementById("liveAvatarStatus");
   const frame = document.getElementById("liveAvatarFrame");
-  const placeholderEl = document.getElementById("liveGoldFramePlaceholder");
-  const yearSpan = document.getElementById("year");
+  const placeholder = document.getElementById("liveGoldFramePlaceholder");
+  let ready = false;
+  let busy = false;
+  let session = null;
+  let timer = null;
 
-  let currentConversationUrl = null;
-
-  function setStatus(message, kind) {
-    statusEl.textContent = message || "";
-    statusEl.classList.toggle("is-error", kind === "error");
-    statusEl.classList.toggle("is-success", kind === "success");
+  function endpoint(path) {
+    const backend = window.URARTUHI_LIVE_AVATAR_BACKEND;
+    if (!backend) throw new Error("Live-avatar backend is not configured.");
+    return new URL(path, backend).href;
   }
 
-  // ---------------------------------------------------------------------
-  // Pluggable live-avatar start call. Currently wraps a backend route that
-  // wraps Tavus's Conversational Video Interface (POST /v2/conversations),
-  // see services/urartuhi-docent/index.js, POST /api/start-live-avatar.
-  // Requires TAVUS_API_KEY + TAVUS_PAL_ID (or TAVUS_FACE_ID) to be
-  // configured on the backend -- until then this call returns a clear
-  // "not configured yet" error instead of a broken/blank iframe.
-  // ---------------------------------------------------------------------
-  async function startLiveAvatar(characterPrompt) {
-    const backendUrl = window.URARTUHI_LIVE_AVATAR_BACKEND;
-    if (!backendUrl) {
-      throw new Error(
-        "No live-avatar backend configured (window.URARTUHI_LIVE_AVATAR_BACKEND is unset)."
-      );
-    }
+  function setStatus(message, error = false) {
+    status.textContent = message;
+    status.classList.toggle("is-error", error);
+  }
 
-    const response = await fetch(backendUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ characterPrompt }),
+  function updateControls() {
+    startBtn.disabled = !ready || busy || !!session;
+    checkBtn.disabled = busy;
+    endBtn.hidden = !session;
+    endBtn.disabled = busy;
+  }
+
+  async function request(path, options = {}) {
+    const response = await fetch(endpoint(path), {
+      ...options, cache: "no-store",
+      signal: AbortSignal.timeout(25000),
     });
-
-    if (!response.ok) {
-      const errorText = await response.text().catch(() => "");
-      throw new Error(errorText || `Could not start conversation (HTTP ${response.status}).`);
+    const data = await response.json().catch(() => {
+      throw new Error(`Backend returned an unexpected response (HTTP ${response.status}). Redeploy the updated service.`);
+    });
+    if (data.conversationId && data.endToken) {
+      session = { conversationId: data.conversationId, endToken: data.endToken };
     }
+    if (!response.ok) throw new Error(data.error || `Request failed (HTTP ${response.status}).`);
+    return data;
+  }
 
-    const data = await response.json();
-    if (!data || !data.conversationUrl) {
-      throw new Error("Live-avatar backend returned no conversation URL.");
+  async function checkSetup() {
+    busy = true;
+    updateControls();
+    try {
+      const data = await request("/api/live-avatar-status");
+      ready = data.ready === true;
+      setupStatus.textContent = ready
+        ? "Server variables are configured. Account/key validity and credits are not yet verified. Only Start creates a conversation."
+        : `Server setup required: ${(data.missing || []).join(", ")}. Set these in Railway using your existing account, then redeploy and check again.`;
+    } catch (error) {
+      ready = false;
+      setupStatus.textContent = `Setup check failed: ${error.message} Deploy the updated Railway service and check its allowed origins, then try again. No conversation was started.`;
+    } finally {
+      busy = false;
+      updateControls();
     }
-    return data.conversationUrl;
+  }
+
+  function detachFrame() {
+    frame.removeAttribute("src");
+    frame.hidden = true;
+    placeholder.hidden = false;
+  }
+
+  async function endConversation() {
+    if (!session || busy) return;
+    busy = true;
+    updateControls();
+    detachFrame();
+    clearTimeout(timer);
+    try {
+      await request("/api/end-live-avatar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(session),
+      });
+      session = null;
+      setStatus("Tavus confirmed the conversation ended.");
+    } catch (error) {
+      setStatus(`${error.message} Retry End or check the Tavus dashboard. Do not start another session until resolved.`, true);
+    } finally {
+      busy = false;
+      updateControls();
+    }
   }
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
-
-    const characterPrompt = characterPromptField.value.trim();
-    if (!characterPrompt) {
-      setStatus("Please describe your character first.", "error");
-      characterPromptField.focus();
+    if (busy || session || !ready) return;
+    if (!prompt.value.trim() || prompt.value.length > 2000 || !accessCode.value || !consent.checked) {
+      setStatus("Enter a description, your private owner access code, and confirm consent before starting.", true);
       return;
     }
-
-    startBtn.disabled = true;
-    setStatus("Starting your live conversation...");
-
+    busy = true;
+    updateControls();
+    setStatus("Requesting a Tavus conversation. This may use plan credits...");
     try {
-      currentConversationUrl = await startLiveAvatar(characterPrompt);
-      frame.src = currentConversationUrl;
+      const data = await request("/api/start-live-avatar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Urartuhi-Access-Code": accessCode.value },
+        body: JSON.stringify({ characterPrompt: prompt.value.trim(), consent: true }),
+      });
+      accessCode.value = "";
+      if (!session) throw new Error("Backend returned no cleanup capability. Check Tavus before retrying.");
+      const url = new URL(data.conversationUrl);
+      if (url.protocol !== "https:" || url.username || url.password ||
+          !(url.hostname === "tavus.daily.co" || url.hostname.endsWith(".daily.co"))) {
+        throw new Error("Backend returned an unsupported conversation URL. Use End to clean up.");
+      }
+      frame.src = url.href;
       frame.hidden = false;
-      placeholderEl.hidden = true;
-      endBtn.hidden = false;
-      setStatus("Connected -- say hello.", "success");
+      placeholder.hidden = true;
+      timer = setTimeout(endConversation, 300000);
+      setStatus("Room created. Join using the embedded camera/microphone controls. This is not yet confirmation of a connected call; five-minute maximum.");
     } catch (error) {
-      setStatus(
-        `Could not start a live avatar: ${error.message || "unknown error"}. ` +
-          "The live-avatar backend may not be configured with a provider API key yet -- see README.",
-        "error"
-      );
+      setStatus(`${error.message} ${session ? "Use End to clean up this session." : "If creation was uncertain, check Tavus before retrying."}`, true);
     } finally {
-      startBtn.disabled = false;
+      busy = false;
+      updateControls();
     }
   });
-
-  endBtn.addEventListener("click", () => {
-    frame.src = "";
-    frame.hidden = true;
-    placeholderEl.hidden = false;
-    endBtn.hidden = true;
-    currentConversationUrl = null;
-    setStatus("Conversation ended.");
+  endBtn.addEventListener("click", endConversation);
+  checkBtn.addEventListener("click", checkSetup);
+  window.addEventListener("pagehide", () => {
+    if (!session) return;
+    detachFrame();
+    fetch(endpoint("/api/end-live-avatar"), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(session), keepalive: true,
+    }).catch(() => {
+      // Navigation cleanup is best-effort; provider timeouts bound abandoned calls.
+      console.warn("Tavus cleanup was not confirmed. Check the dashboard; calls are capped at five minutes.");
+    });
   });
-
-  if (yearSpan) {
-    yearSpan.textContent = new Date().getFullYear();
-  }
+  window.addEventListener("pageshow", (event) => {
+    if (event.persisted && session) endConversation();
+  });
+  document.getElementById("year").textContent = new Date().getFullYear();
+  checkSetup();
 })();

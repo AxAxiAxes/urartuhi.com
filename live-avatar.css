@@ -12,6 +12,15 @@
   margin-top: 0.75rem;
 }
 
+#liveGoldFrame {
+  aspect-ratio: auto;
+  height: clamp(440px, 65vh, 700px);
+}
+
+#liveSetupStatus {
+  overflow-wrap: anywhere;
+}
+
 #liveAvatarFrame {
   width: 100%;
   height: 100%;
