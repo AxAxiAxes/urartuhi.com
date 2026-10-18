@@ -7,7 +7,7 @@
   <meta name="description" content="Talk face-to-face with a real animated Urartuhi avatar -- describe a character in your own words and start a live voice conversation." />
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="avatar.css" />
-  <link rel="stylesheet" href="live-avatar.css" />
+  <link rel="stylesheet" href="live-avatar.css?v=tavus-setup-1" />
 </head>
 <body>
   <header class="site-header">
@@ -25,12 +25,23 @@
   <main class="avatar-main">
     <section class="avatar-studio live-avatar-studio" aria-label="Live avatar conversation">
       <form class="avatar-form" id="liveAvatarForm">
-        <h2>Describe your character</h2>
+        <h2>Talk with your Tavus avatar</h2>
         <p class="live-avatar-intro">
-          No style presets here -- just describe who they are (appearance,
-          personality, voice) in your own words. This starts a real,
-          animated, spoken conversation, not an image.
+          Uses the face, voice and PAL from your existing Tavus account.
+          Describe conversation context here; this does not create a new
+          face or change the account's avatar.
         </p>
+        <p id="liveSetupStatus" role="status">Checking server configuration (no conversation will start)...</p>
+        <button type="button" class="download-btn" id="checkLiveSetup">Check setup again</button>
+        <p class="live-avatar-intro">
+          API keys belong only in Railway Variables, never here or in chat.
+          Setup needs TAVUS_API_KEY, TAVUS_PAL_ID (or TAVUS_FACE_ID), and
+          a private TAVUS_ACCESS_CODE of at least 16 characters.
+        </p>
+        <label class="field" for="liveAccessCode">
+          <span>Private owner access code (not your Tavus API key)</span>
+          <input id="liveAccessCode" type="password" autocomplete="off" required maxlength="200" />
+        </label>
 
         <label class="field" for="characterPrompt">
           <span>Character description</span>
@@ -39,10 +50,17 @@
             rows="6"
             placeholder="e.g. a warm, curious woman in her late 20s with a soft voice, calm and thoughtful, who speaks slowly and asks good questions"
             required
+            maxlength="2000"
           ></textarea>
         </label>
 
-        <button type="submit" class="generate-btn" id="startLiveBtn">Start live conversation</button>
+        <label class="field checkbox-field" for="liveConsent">
+          <input type="checkbox" id="liveConsent" required />
+          <span>I agree to send this description and my permitted camera/microphone
+            media to Tavus. Starting may use my existing plan credits.
+            Calls are capped at five minutes; recording is off.</span>
+        </label>
+        <button type="submit" class="generate-btn" id="startLiveBtn" disabled>Start live conversation</button>
         <button type="button" class="download-btn" id="endLiveBtn" hidden>End conversation</button>
 
         <p class="avatar-status" id="liveAvatarStatus" role="status" aria-live="polite"></p>
@@ -57,6 +75,7 @@
               hidden
               allow="camera; microphone; autoplay; fullscreen; display-capture"
               title="Live avatar conversation"
+              referrerpolicy="no-referrer"
             ></iframe>
             <p class="gold-frame-placeholder" id="liveGoldFramePlaceholder">
               Your live avatar will appear here once a conversation starts.
@@ -72,6 +91,6 @@
   </footer>
 
   <script>window.URARTUHI_LIVE_AVATAR_BACKEND = "https://urartuhicom-production.up.railway.app/api/start-live-avatar";</script>
-  <script src="live-avatar.js"></script>
+  <script src="live-avatar.js?v=tavus-setup-1"></script>
 </body>
 </html>

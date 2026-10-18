@@ -21,14 +21,48 @@ Pinterest-style masonry thumbnail grid with optional tag filtering.
 - `images/well-of-pure-source-axpure.jpg` -- the featured centerpiece
   artwork (shown separately, above the slideshow).
 - `images/gallery/` -- additional artwork image files.
-- `images/manifest.json` -- the list of additional slideshow/grid
-  artworks. Starts empty (`[]`); the page shows a friendly "no pieces
-  yet" note until you add entries.
+- `images/manifest.json` -- the list of 34 original additional
+  slideshow/grid artworks. An empty array (`[]`) shows a friendly
+  "no pieces yet" note; a failed manifest request shows a load error,
+  not a misleading empty gallery.
 
 ## Adding artwork (including bulk uploads)
 
+### Bulk selection for a private local slideshow
+
+Open **Slideshow viewer** from the original gallery navigation
+(`slideshow.html`, locally `http://127.0.0.1:8768/slideshow.html`).
+This dedicated browser app uses the same manifest, image picker, controls,
+and gallery script as the original page; no separate service or framework.
+The larger neutral stage fits whole portraits and landscapes without
+distortion/cropping by default. **Fill frame (crop)** is an explicit opt-in;
+**Fit whole image** reverses it. **Fullscreen** expands the image stage and
+controls where the browser allows it; Escape exits. Gallery and companion
+links tie the viewer back to the existing site. No backend is required.
+
+On either page, use **Add images to this slideshow -> Choose multiple
+images (local only)**. Select multiple files from your device or a synced
+OneDrive folder using the system file picker. Accepted images are appended
+to the original slideshow and thumbnails, with a `local` tag; navigation,
+autoplay, pause, and filtering still work. Choose again to add more.
+**Clear local images** removes all selected images and restores the original
+gallery. Reloading also discards the local selection.
+
+This is not a OneDrive integration or a server upload: selected image bytes
+stay in browser memory through object URLs, never sent to AI, cloud storage,
+or the repository. Nothing is published or saved to localStorage. Only
+explicitly selected files are read. Limits: 50 local images, 10 MiB per
+file, 100 MiB total, and 20 megapixels per image; JPEG/PNG/WebP/GIF only.
+Unreadable, unsupported, oversized, and over-limit files are rejected with
+visible feedback. Object URLs are released on rejection, clearing, or
+leaving the page (except when retained in the browser's back/forward cache).
+Cloud-only OneDrive files must first be made available through the system
+file picker; this page does not connect to your OneDrive account.
+
+### Publishing permanent gallery artwork
+
 There is no fixed limit on how many images this page can hold -- it is a
-plain static site with no upload form or backend. "Uploading" means
+plain static site with no publishing backend. Permanent "uploading" means
 committing image files to this repository's `images/` folder and listing
 each one in `images/manifest.json`. Practical ceiling: GitHub blocks any
 single file over 100MB, and a repository should stay well under ~1GB as
@@ -132,36 +166,74 @@ a short personality description, then chat with it.
 
 ## Live Avatar (`/live-avatar`, `live-avatar.html`)
 
-The actual "real animated, talking avatar" feature: a single free-text
-"Describe your character" box (no style presets, no image generation
-step) that starts a **real-time, spoken, face-to-face video conversation**
-with a live animated character -- a fundamentally different technology
-from `/avatar`'s static image generator.
+Uses your **existing Tavus account, PAL and face** for a real-time video
+conversation. This is distinct from the static image generator and from
+the separate historical Eternal AI project. The description supplies
+conversation context; it does not generate a new face or change your
+account's voice/PAL configuration.
 
-- `live-avatar.html` / `live-avatar.css` / `live-avatar.js` -- page
-  markup, styling (reuses the `.gold-frame` treatment from `avatar.css`),
-  and client logic. On submit, it POSTs the character description to a
-  pluggable `startLiveAvatar()` function and embeds the returned
-  conversation URL in an `<iframe>` (camera/microphone permission
-  requested by the provider's own embedded page).
-- **Backend:** `POST /api/start-live-avatar` in
-  `services/urartuhi-docent/index.js`, wrapping **Tavus's Conversational
-  Video Interface** (`POST https://tavusapi.com/v2/conversations`).
-  Requires two Railway env vars that are **not yet configured** anywhere
-  in this repo:
-  - `TAVUS_API_KEY` -- from https://platform.tavus.io.
-  - `TAVUS_PAL_ID` (preferred) or `TAVUS_FACE_ID` -- a face/persona bundle
-    you create once in the Tavus dashboard. Tavus needs an existing face
-    to animate; it cannot generate one from a text prompt alone, so this
-    step can't be automated by the agent and must be done by you.
-  Until both are set, the route returns a clear "not configured" error
-  instead of a broken iframe or a fabricated response.
-- No credentials for this provider exist in this environment yet, so this
-  feature has **not** been tested end-to-end against a live Tavus call --
-  only the UI, the error path (missing-key case), and JS/element wiring
-  have been verified. Once `TAVUS_API_KEY` + `TAVUS_PAL_ID`/`TAVUS_FACE_ID`
-  are set on the `urartuhi.com` Railway service, a live smoke test is
-  still needed.
+**Owner setup (no new account or purchase required by this code):**
+
+1. In your existing Tavus dashboard, locate the API key and existing PAL
+   with a valid default face, or the existing face ID. Do not paste API
+   keys into chat, the HTML, the browser access-code field, or the repo.
+2. Open the Railway service that serves
+   `https://urartuhicom-production.up.railway.app` (historically named
+   `urartuhi.com`). In **Variables**, privately set `TAVUS_API_KEY` and
+   `TAVUS_PAL_ID`, or `TAVUS_FACE_ID` if using a face without a PAL.
+   If both IDs are supplied, the face overrides the PAL's default face.
+   These names match the current official contract checked 2026-10-17:
+   [Create conversation](https://docs.tavus.io/api-reference/conversations/create-conversation).
+   Do not relabel legacy persona/replica IDs without confirming them in
+   your current account; this implementation sends `pal_id`/`face_id`.
+3. Also set `TAVUS_ACCESS_CODE` to a new private random owner code of at
+   least 16 characters. This is **not** your Tavus API key. It prevents
+   anonymous public visitors from creating chargeable calls. Share it
+   only with intended users, not in chat/repo/logs. Configure through the
+   Railway dashboard; no Railway account access is available in this task.
+4. Deploy this branch's backend changes (`services/urartuhi-docent`,
+   `npm start`) and publish the updated static page. The current live
+   backend's new readiness endpoint returned HTTP 404 before deployment;
+   the local static preview cannot deploy it or configure its variables.
+5. Open `live-avatar.html` (local preview:
+   `http://127.0.0.1:8768/live-avatar.html`) and **Check setup again**.
+   `GET /api/live-avatar-status` checks server variable presence only:
+   it never contacts Tavus, exposes key/ID values, validates a license,
+   verifies credits, or starts a call. Ready means configured, not
+   authenticated end-to-end.
+6. When you choose to use your plan credits, enter the private owner code,
+   context, and media/cost consent, then Start. Only this explicit action
+   creates a Tavus session. The embedded provider UI asks for media
+   permissions. Selected slideshow images are not connected or sent.
+
+**Lifecycle and cost controls:** `services/urartuhi-docent/tavus.js`
+registers readiness, start, and end routes. API keys stay server-side;
+provider errors are sanitized. Start requires an approved origin and
+private owner code; calls use private meeting tokens, two participants
+maximum, a five-minute provider duration cap, 60-second absent and
+30-second participant-left timeouts, with recording disabled. Only one
+call/start is allowed per server process; an uncertain creation holds a
+six-minute retry lock to avoid accidental duplicates. This is a
+single-instance owner setup, not multi-user billing or distributed rate
+limiting. A server restart loses its cleanup capability/lock; provider
+timeouts still apply. Do not scale replicas without shared session state.
+Your existing Tavus subscription/license controls actual charges/credits;
+these safeguards are not a guarantee that usage is free.
+
+**End conversation** removes the iframe and calls
+`POST /api/end-live-avatar`, which uses the returned session-scoped cleanup
+token to call Tavus's non-destructive
+[End Conversation](https://docs.tavus.io/api-reference/conversations/end-conversation)
+endpoint. It does not delete conversation records. Failed End is visible
+and retryable, with Start blocked; use your Tavus dashboard if necessary.
+Navigation cleanup is best-effort, with provider timeouts as backstop.
+Room creation is not presented as a connected video call.
+
+**Verification:** `cd services/urartuhi-docent`, then `npm test` (Node 22+).
+Tests mock Tavus; no real provider calls, account changes, purchases, or
+paid sessions are made by tests/setup checks. Live account/license/key
+validity and real camera/microphone conversation still require the owner
+to configure Railway and explicitly start an authorized session.
 
 ## Avatar Generator (`/avatar`, `avatar.html`)
 
@@ -226,11 +298,19 @@ change, not a code change. Specifically:
 
 ## Local preview
 
-Open `index.html` directly in a browser, or serve the folder locally:
+Serve the repository root over HTTP so the browser can fetch the gallery
+manifest (opening `index.html` as a file can block that request):
 
 ```
 npx serve .
 ```
+
+Alternatively, with Python installed, run `python -m http.server 8768 --bind
+127.0.0.1` and open `http://127.0.0.1:8768/`. The original pages are
+`/avatar.html`, `/companion.html`, and `/live-avatar.html`; extensionless
+paths depend on the host and are not required for this static preview.
+Previewing the gallery needs no AI key or paid API requests. Generating
+images, chatting, or requesting backend speech can incur provider charges.
 
 ## Deployment
 
@@ -264,3 +344,71 @@ see below.
 
 This DNS change must be made by whoever holds the SiteGround login for
 this domain -- it cannot be done from GitHub or from this repository.
+
+### Recovery findings (2026-10-17 PDT)
+
+The original site has not been deleted from this repository. The gallery
+and 34 images were added in `6417742`; the avatar and companion pages in
+`41ab1cf` (PR #2). The current Pages build is `e87f089` (PR #11), published
+from `main`, root directory, with custom domain `urartuhi.com`.
+
+Read-only checks found:
+
+- The apex returned no A record; `www` pointed to
+  `qclosrzd.up.railway.app`, whose root returned Railway's 404 fallback.
+- GitHub Pages reported `built`, but `https_enforced: false`. Its default
+  `github.io` URL redirects to the broken custom domain, so it is not an
+  independent recovery URL.
+- Bypassing DNS with
+  `curl.exe --resolve urartuhi.com:80:185.199.108.153 http://urartuhi.com/`
+  returned the original gallery (HTTP 200). This is a diagnostic only,
+  not a DNS change or a secure public URL. HTTPS with the same pinned
+  address failed certificate-name validation; do not disable TLS checks
+  as a workaround.
+- The original backend is
+  `https://urartuhicom-production.up.railway.app`, **not** the `qclosrzd`
+  hostname. Its root returned `{"name":"Urartuhi Docent","status":"live"}`.
+  No paid OpenAI requests were made, so this does not establish that its
+  configured key or paid generation/chat/speech routes work.
+- The live-avatar route reported missing `TAVUS_API_KEY`. This was an
+  already-documented unfinished integration, not a slideshow regression.
+  No new provider account, credentials, or subscription is needed to
+  restore the original static slideshow.
+
+**Owner action to restore public access:** in SiteGround's DNS Zone
+Editor, add the four apex A records listed above and replace only the
+incorrect `www` CNAME with `axaxiaxes.github.io`. Preserve unrelated
+MX/TXT/mail records and other subdomains. These values match
+[GitHub's official custom-domain documentation](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site).
+In [Settings -> Pages](https://github.com/AxAxiAxes/urartuhi.com/settings/pages),
+keep `main` / root and custom domain `urartuhi.com`; allow DNS propagation
+and certificate issuance, then enable Enforce HTTPS. Confirm both
+`https://urartuhi.com/` and `https://www.urartuhi.com/` work without TLS
+warnings and that `/avatar.html` loads. No hosting or DNS settings were
+changed during recovery; repository changes alone cannot repair DNS.
+
+`automate.ps1` updates only the docent URL in local files. It must retain
+the browser widget in `js/urartuhi-docent.js`, never copy the Express
+backend there, and does not stage, commit, or push changes. The avatar,
+companion, and live-avatar backend URLs remain in their own HTML pages;
+review those separately if the backend hostname ever changes.
+
+### Original gallery whisper and avatar companion
+
+The historical on-gallery **Urartuhi whisper** (introduced in `9eb5e33`)
+was broken: deployment commit `908f5cb` copied Express server code into its
+browser script, and its earlier play-button selector did not match the
+slideshow controls. The browser widget is restored with an explicit
+**Ask Urartuhi about this artwork** launcher beneath the slideshow, its
+original fixed-bottom whisper/question panel, and Close/Escape controls.
+Opening it makes no provider call; Narrate or Ask explicitly sends only
+the selected original public artwork URL/title/question to the existing
+AI backend. Local selected images are blocked from this route. Replies
+are rendered as text, not HTML. Live paid responses have not been verified.
+
+The original avatar-based companion is a separate `companion.html` page:
+saved-avatar picker, gold-frame portrait, persona, chat, and voice controls.
+The gallery now explicitly links **Open avatar companion chat** next to
+the whisper launcher. No background animated-avatar layer was found in
+the inspected source/history. The separate `live-avatar.html` remains the
+historically incomplete Tavus integration, not a replacement slideshow.

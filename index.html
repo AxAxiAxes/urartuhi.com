@@ -12,6 +12,8 @@
     <h1 class="wordmark">An Instant In Eternity</h1>
     <p class="tagline">Urartuhi &middot; A curated gallery of works</p>
     <nav class="avatar-nav">
+      <a href="slideshow.html">Open slideshow viewer &rarr;</a>
+      &middot;
       <a href="avatar.html">Create your own avatar &rarr;</a>
       &middot;
       <a href="companion.html">Companion chat &rarr;</a>
@@ -39,6 +41,24 @@
       </figure>
     </section>
 
+    <section class="local-images" aria-labelledby="localImagesHeading">
+      <h2 id="localImagesHeading">Add images to this slideshow</h2>
+      <label for="localImageFiles">Choose multiple images (local only)</label>
+      <input id="localImageFiles" type="file" multiple
+        accept="image/jpeg,image/png,image/webp,image/gif"
+        aria-describedby="localImagesHelp localImagesStatus" />
+      <p id="localImagesHelp">
+        Preview files from your device, including a synced OneDrive folder.
+        Nothing is uploaded or published. Up to 50 images, 10 MiB each,
+        100 MiB total; JPEG, PNG, WebP or GIF, up to 20 megapixels each.
+        Local images disappear when you reload or clear them.
+      </p>
+      <button type="button" class="play-pause" id="clearLocalImages" disabled>
+        Clear local images &mdash; return to original gallery
+      </button>
+      <p id="localImagesStatus" role="status" aria-live="polite"></p>
+    </section>
+
     <section class="slideshow" aria-label="Additional artwork slideshow">
       <div class="slides" id="slides"></div>
 
@@ -50,6 +70,26 @@
         <div class="dots" id="dots" role="tablist" aria-label="Slide selector"></div>
         <span class="slide-counter" id="slideCounter" hidden></span>
       </div>
+    </section>
+
+    <p class="docent-launch">
+      <button type="button" class="play-pause" id="openUrartuhi"
+        aria-controls="urartuhi-whisper" aria-expanded="false">Ask Urartuhi about this artwork</button>
+      &middot; <a href="companion.html">Open avatar companion chat &rarr;</a>
+    </p>
+    <section id="urartuhi-whisper" class="docent-panel" aria-labelledby="docentHeading" hidden>
+      <button type="button" class="play-pause" id="closeUrartuhi">Close</button>
+      <h2 id="docentHeading">Urartuhi whisper</h2>
+      <p>Ask about the current public artwork. Sending uses the AI backend;
+        local images are never sent.</p>
+      <p id="urartuhi-response" role="status" aria-live="polite">Choose Narrate or enter a question.</p>
+      <button type="button" class="play-pause" id="urartuhi-narrate">Narrate current artwork</button>
+      <form id="urartuhi-chat">
+        <label for="urartuhi-input">Ask Urartuhi about this piece</label>
+        <input id="urartuhi-input" type="text" maxlength="1000" required />
+        <button type="submit" class="play-pause" id="urartuhi-send">Ask</button>
+      </form>
+      <a href="companion.html">Continue to avatar companion chat &rarr;</a>
     </section>
 
     <section class="gallery-grid" aria-label="All artwork thumbnails">
@@ -84,8 +124,5 @@
 <script src="./js/urartuhi-docent.js"></script>
 </body>
 </html>
-
-
-
 
 
