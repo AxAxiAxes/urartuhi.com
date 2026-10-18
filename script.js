@@ -31,12 +31,13 @@
     })[character]);
   }
 
-  function showEmptyState() {
+  function showEmptyState(message) {
     slideshowSection.hidden = true;
     gridSection.hidden = true;
     const note = document.createElement("p");
     note.className = "gallery-empty-note";
-    note.textContent =
+    note.setAttribute("role", "status");
+    note.textContent = message ||
       "No additional slideshow pieces yet. Add image files to images/ and " +
       "list them in images/manifest.json to populate this gallery -- see " +
       "the README for the exact format. Any number of entries is " +
@@ -243,8 +244,25 @@
   }
 
   fetch(MANIFEST_URL, { cache: "no-store" })
-    .then((response) => (response.ok ? response.json() : []))
-    .catch(() => [])
-    .then((entries) => init(Array.isArray(entries) ? entries : []));
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Gallery manifest request failed (HTTP ${response.status}).`);
+      }
+      return response.json();
+    })
+    .then((entries) => {
+      if (!Array.isArray(entries)) {
+        throw new Error("Gallery manifest must contain an array.");
+      }
+      init(entries);
+    })
+    .catch((error) => {
+      console.error("Could not load the gallery:", error);
+      showEmptyState(
+        "Could not load the additional artwork. Reload the page to try again. " +
+        "For a local preview, serve this folder over HTTP rather than opening " +
+        "index.html directly. If the problem persists, check images/manifest.json."
+      );
+      if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+    });
 })();
-

@@ -21,9 +21,10 @@ Pinterest-style masonry thumbnail grid with optional tag filtering.
 - `images/well-of-pure-source-axpure.jpg` -- the featured centerpiece
   artwork (shown separately, above the slideshow).
 - `images/gallery/` -- additional artwork image files.
-- `images/manifest.json` -- the list of additional slideshow/grid
-  artworks. Starts empty (`[]`); the page shows a friendly "no pieces
-  yet" note until you add entries.
+- `images/manifest.json` -- the list of 34 original additional
+  slideshow/grid artworks. An empty array (`[]`) shows a friendly
+  "no pieces yet" note; a failed manifest request shows a load error,
+  not a misleading empty gallery.
 
 ## Adding artwork (including bulk uploads)
 
@@ -226,11 +227,19 @@ change, not a code change. Specifically:
 
 ## Local preview
 
-Open `index.html` directly in a browser, or serve the folder locally:
+Serve the repository root over HTTP so the browser can fetch the gallery
+manifest (opening `index.html` as a file can block that request):
 
 ```
 npx serve .
 ```
+
+Alternatively, with Python installed, run `python -m http.server 8768 --bind
+127.0.0.1` and open `http://127.0.0.1:8768/`. The original pages are
+`/avatar.html`, `/companion.html`, and `/live-avatar.html`; extensionless
+paths depend on the host and are not required for this static preview.
+Previewing the gallery needs no AI key or paid API requests. Generating
+images, chatting, or requesting backend speech can incur provider charges.
 
 ## Deployment
 
@@ -264,3 +273,51 @@ see below.
 
 This DNS change must be made by whoever holds the SiteGround login for
 this domain -- it cannot be done from GitHub or from this repository.
+
+### Recovery findings (2026-10-17 PDT)
+
+The original site has not been deleted from this repository. The gallery
+and 34 images were added in `6417742`; the avatar and companion pages in
+`41ab1cf` (PR #2). The current Pages build is `e87f089` (PR #11), published
+from `main`, root directory, with custom domain `urartuhi.com`.
+
+Read-only checks found:
+
+- The apex returned no A record; `www` pointed to
+  `qclosrzd.up.railway.app`, whose root returned Railway's 404 fallback.
+- GitHub Pages reported `built`, but `https_enforced: false`. Its default
+  `github.io` URL redirects to the broken custom domain, so it is not an
+  independent recovery URL.
+- Bypassing DNS with
+  `curl.exe --resolve urartuhi.com:80:185.199.108.153 http://urartuhi.com/`
+  returned the original gallery (HTTP 200). This is a diagnostic only,
+  not a DNS change or a secure public URL. HTTPS with the same pinned
+  address failed certificate-name validation; do not disable TLS checks
+  as a workaround.
+- The original backend is
+  `https://urartuhicom-production.up.railway.app`, **not** the `qclosrzd`
+  hostname. Its root returned `{"name":"Urartuhi Docent","status":"live"}`.
+  No paid OpenAI requests were made, so this does not establish that its
+  configured key or paid generation/chat/speech routes work.
+- The live-avatar route reported missing `TAVUS_API_KEY`. This was an
+  already-documented unfinished integration, not a slideshow regression.
+  No new provider account, credentials, or subscription is needed to
+  restore the original static slideshow.
+
+**Owner action to restore public access:** in SiteGround's DNS Zone
+Editor, add the four apex A records listed above and replace only the
+incorrect `www` CNAME with `axaxiaxes.github.io`. Preserve unrelated
+MX/TXT/mail records and other subdomains. These values match
+[GitHub's official custom-domain documentation](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site).
+In [Settings -> Pages](https://github.com/AxAxiAxes/urartuhi.com/settings/pages),
+keep `main` / root and custom domain `urartuhi.com`; allow DNS propagation
+and certificate issuance, then enable Enforce HTTPS. Confirm both
+`https://urartuhi.com/` and `https://www.urartuhi.com/` work without TLS
+warnings and that `/avatar.html` loads. No hosting or DNS settings were
+changed during recovery; repository changes alone cannot repair DNS.
+
+`automate.ps1` updates only the docent URL in local files. It must retain
+the browser widget in `js/urartuhi-docent.js`, never copy the Express
+backend there, and does not stage, commit, or push changes. The avatar,
+companion, and live-avatar backend URLs remain in their own HTML pages;
+review those separately if the backend hostname ever changes.
