@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Slideshow Viewer | Urartuhi</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="slideshow.css" />
+</head>
+<body class="viewer-page">
+  <header class="viewer-header">
+    <h1>Urartuhi slideshow</h1>
+    <nav class="avatar-nav" aria-label="Site">
+      <a href="index.html">&larr; Original gallery</a>
+      &middot; <a href="companion.html">Avatar companion chat &rarr;</a>
+    </nav>
+  </header>
+  <main>
+    <section class="slideshow" aria-label="Artwork slideshow">
+      <div class="slides" id="slides"></div>
+      <button class="nav prev" id="prevBtn" aria-label="Previous artwork">&#10094;</button>
+      <button class="nav next" id="nextBtn" aria-label="Next artwork">&#10095;</button>
+      <div class="controls">
+        <button class="play-pause" id="playPauseBtn" aria-label="Pause slideshow">Pause</button>
+        <button class="play-pause" id="fitImageBtn" aria-pressed="false">Fill frame (crop)</button>
+        <button class="play-pause" id="fullscreenBtn">Fullscreen</button>
+        <div class="dots" id="dots" role="tablist" aria-label="Slide selector"></div>
+        <span class="slide-counter" id="slideCounter" hidden></span>
+      </div>
+    </section>
+    <p id="viewerStatus" role="status" aria-live="polite">Fit mode shows the entire image without cropping. Use arrow keys to navigate.</p>
+    <section class="local-images" aria-labelledby="localImagesHeading">
+      <h2 id="localImagesHeading">Add images to this slideshow</h2>
+      <label for="localImageFiles">Choose multiple images (local only)</label>
+      <input id="localImageFiles" type="file" multiple
+        accept="image/jpeg,image/png,image/webp,image/gif"
+        aria-describedby="localImagesHelp localImagesStatus" />
+      <p id="localImagesHelp">
+        Select files from your device or a synced OneDrive folder.
+        Nothing is uploaded or published. Up to 50 images, 10 MiB each,
+        100 MiB total; JPEG, PNG, WebP or GIF, up to 20 megapixels each.
+        Clear or reload to remove local images.
+      </p>
+      <button type="button" class="play-pause" id="clearLocalImages" disabled>
+        Clear local images &mdash; return to original gallery
+      </button>
+      <p id="localImagesStatus" role="status" aria-live="polite"></p>
+    </section>
+    <section class="gallery-grid" aria-label="All artwork thumbnails">
+      <h2>Choose an image</h2>
+      <div class="tag-filter" id="tagFilter" role="group" aria-label="Filter by tag" hidden></div>
+      <div class="grid" id="grid"></div>
+    </section>
+  </main>
+  <footer class="site-footer">&copy; <span id="year"></span> Urartuhi.</footer>
+  <script src="script.js"></script>
+</body>
+</html>

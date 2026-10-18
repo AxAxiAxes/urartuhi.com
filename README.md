@@ -28,8 +28,41 @@ Pinterest-style masonry thumbnail grid with optional tag filtering.
 
 ## Adding artwork (including bulk uploads)
 
+### Bulk selection for a private local slideshow
+
+Open **Slideshow viewer** from the original gallery navigation
+(`slideshow.html`, locally `http://127.0.0.1:8768/slideshow.html`).
+This dedicated browser app uses the same manifest, image picker, controls,
+and gallery script as the original page; no separate service or framework.
+The larger neutral stage fits whole portraits and landscapes without
+distortion/cropping by default. **Fill frame (crop)** is an explicit opt-in;
+**Fit whole image** reverses it. **Fullscreen** expands the image stage and
+controls where the browser allows it; Escape exits. Gallery and companion
+links tie the viewer back to the existing site. No backend is required.
+
+On either page, use **Add images to this slideshow -> Choose multiple
+images (local only)**. Select multiple files from your device or a synced
+OneDrive folder using the system file picker. Accepted images are appended
+to the original slideshow and thumbnails, with a `local` tag; navigation,
+autoplay, pause, and filtering still work. Choose again to add more.
+**Clear local images** removes all selected images and restores the original
+gallery. Reloading also discards the local selection.
+
+This is not a OneDrive integration or a server upload: selected image bytes
+stay in browser memory through object URLs, never sent to AI, cloud storage,
+or the repository. Nothing is published or saved to localStorage. Only
+explicitly selected files are read. Limits: 50 local images, 10 MiB per
+file, 100 MiB total, and 20 megapixels per image; JPEG/PNG/WebP/GIF only.
+Unreadable, unsupported, oversized, and over-limit files are rejected with
+visible feedback. Object URLs are released on rejection, clearing, or
+leaving the page (except when retained in the browser's back/forward cache).
+Cloud-only OneDrive files must first be made available through the system
+file picker; this page does not connect to your OneDrive account.
+
+### Publishing permanent gallery artwork
+
 There is no fixed limit on how many images this page can hold -- it is a
-plain static site with no upload form or backend. "Uploading" means
+plain static site with no publishing backend. Permanent "uploading" means
 committing image files to this repository's `images/` folder and listing
 each one in `images/manifest.json`. Practical ceiling: GitHub blocks any
 single file over 100MB, and a repository should stay well under ~1GB as
@@ -321,3 +354,23 @@ the browser widget in `js/urartuhi-docent.js`, never copy the Express
 backend there, and does not stage, commit, or push changes. The avatar,
 companion, and live-avatar backend URLs remain in their own HTML pages;
 review those separately if the backend hostname ever changes.
+
+### Original gallery whisper and avatar companion
+
+The historical on-gallery **Urartuhi whisper** (introduced in `9eb5e33`)
+was broken: deployment commit `908f5cb` copied Express server code into its
+browser script, and its earlier play-button selector did not match the
+slideshow controls. The browser widget is restored with an explicit
+**Ask Urartuhi about this artwork** launcher beneath the slideshow, its
+original fixed-bottom whisper/question panel, and Close/Escape controls.
+Opening it makes no provider call; Narrate or Ask explicitly sends only
+the selected original public artwork URL/title/question to the existing
+AI backend. Local selected images are blocked from this route. Replies
+are rendered as text, not HTML. Live paid responses have not been verified.
+
+The original avatar-based companion is a separate `companion.html` page:
+saved-avatar picker, gold-frame portrait, persona, chat, and voice controls.
+The gallery now explicitly links **Open avatar companion chat** next to
+the whisper launcher. No background animated-avatar layer was found in
+the inspected source/history. The separate `live-avatar.html` remains the
+historically incomplete Tavus integration, not a replacement slideshow.
